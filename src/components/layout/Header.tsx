@@ -2,6 +2,9 @@ import { useState } from "react";
 import { Search, ShoppingCart, User, Menu, X, ChevronDown, Gift } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { useCart } from "@/contexts/CartContext";
+import { CartSidebar } from "@/components/cart/CartSidebar";
+import { Link } from "react-router-dom";
 
 const navItems = [
   { label: "Home", href: "/" },
@@ -32,7 +35,9 @@ const navItems = [
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-  const [cartCount] = useState(3);
+  const [cartOpen, setCartOpen] = useState(false);
+  const { getCartCount } = useCart();
+  const cartCount = getCartCount();
 
   return (
     <>
@@ -50,7 +55,7 @@ export function Header() {
           {/* Top Row - Logo, Search, Actions */}
           <div className="flex items-center justify-between py-4 gap-4">
             {/* Logo */}
-            <a href="/" className="flex items-center gap-2 shrink-0">
+            <Link to="/" className="flex items-center gap-2 shrink-0">
               <div className="w-10 h-10 rounded-full bg-gradient-hero flex items-center justify-center">
                 <span className="text-primary-foreground font-display font-bold text-lg">K</span>
               </div>
@@ -58,7 +63,7 @@ export function Header() {
                 <span className="font-display text-xl font-bold text-primary">Kyoudai</span>
                 <span className="font-display text-xl font-bold text-accent">Mart</span>
               </div>
-            </a>
+            </Link>
 
             {/* Search Bar - Desktop */}
             <div className="hidden md:flex flex-1 max-w-xl">
@@ -85,12 +90,22 @@ export function Header() {
               </Button>
 
               {/* Cart */}
-              <Button variant="ghost" size="icon" className="relative">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="relative"
+                onClick={() => setCartOpen(true)}
+              >
                 <ShoppingCart className="h-5 w-5" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-cta text-cta-foreground text-xs font-bold flex items-center justify-center">
-                    {cartCount}
-                  </span>
+                  <motion.span 
+                    key={cartCount}
+                    initial={{ scale: 0.5 }}
+                    animate={{ scale: 1 }}
+                    className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-cta text-cta-foreground text-xs font-bold flex items-center justify-center"
+                  >
+                    {cartCount > 99 ? '99+' : cartCount}
+                  </motion.span>
                 )}
               </Button>
 
@@ -115,8 +130,8 @@ export function Header() {
                 onMouseEnter={() => item.dropdown && setActiveDropdown(item.label)}
                 onMouseLeave={() => setActiveDropdown(null)}
               >
-                <a
-                  href={item.href}
+                <Link
+                  to={item.href}
                   className={`
                     flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medium transition-colors
                     ${item.highlight 
@@ -127,7 +142,7 @@ export function Header() {
                 >
                   {item.label}
                   {item.dropdown && <ChevronDown className="h-3 w-3" />}
-                </a>
+                </Link>
 
                 {/* Dropdown */}
                 <AnimatePresence>
@@ -140,13 +155,13 @@ export function Header() {
                       className="absolute top-full left-0 mt-1 w-48 bg-background rounded-lg shadow-elevated border py-2 z-50"
                     >
                       {item.dropdown.map((subItem) => (
-                        <a
+                        <Link
                           key={subItem}
-                          href={`${item.href}/${subItem.toLowerCase().replace(/\s+/g, '-')}`}
+                          to={`${item.href}/${subItem.toLowerCase().replace(/\s+/g, '-')}`}
                           className="block px-4 py-2 text-sm text-foreground/80 hover:text-foreground hover:bg-secondary transition-colors"
                         >
                           {subItem}
-                        </a>
+                        </Link>
                       ))}
                     </motion.div>
                   )}
@@ -168,9 +183,9 @@ export function Header() {
           >
             <nav className="container py-4 space-y-1">
               {navItems.map((item) => (
-                <a
+                <Link
                   key={item.label}
-                  href={item.href}
+                  to={item.href}
                   className={`
                     block px-4 py-3 rounded-lg text-sm font-medium transition-colors
                     ${item.highlight 
@@ -181,12 +196,15 @@ export function Header() {
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.label}
-                </a>
+                </Link>
               ))}
             </nav>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Cart Sidebar */}
+      <CartSidebar open={cartOpen} onOpenChange={setCartOpen} />
     </>
   );
 }
