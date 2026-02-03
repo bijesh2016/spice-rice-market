@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Product } from "@/data/products";
 import { useCart } from "@/contexts/CartContext";
+import { useWishlist } from "@/contexts/WishlistContext";
 import { Link } from "react-router-dom";
 
 interface ProductListCardProps {
@@ -13,10 +14,12 @@ interface ProductListCardProps {
 
 export function ProductListCard({ product, index = 0 }: ProductListCardProps) {
   const { addToCart, removeFromCart, isInCart, items, updateQuantity } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
   const discount = product.originalPrice 
     ? Math.round((1 - product.price / product.originalPrice) * 100) 
     : 0;
   const inCart = isInCart(product.id);
+  const inWishlist = isInWishlist(product.id);
   const cartItem = items.find(i => i.product.id === product.id);
 
   return (
@@ -65,8 +68,11 @@ export function ProductListCard({ product, index = 0 }: ProductListCardProps) {
                 </h3>
               </Link>
             </div>
-            <button className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center hover:bg-secondary/80 transition-colors">
-              <Heart className="h-4 w-4 text-muted-foreground hover:text-cta transition-colors" />
+            <button 
+              className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center hover:bg-secondary/80 transition-colors"
+              onClick={() => toggleWishlist(product)}
+            >
+              <Heart className={`h-4 w-4 transition-colors ${inWishlist ? 'fill-cta text-cta' : 'text-muted-foreground hover:text-cta'}`} />
             </button>
           </div>
           
