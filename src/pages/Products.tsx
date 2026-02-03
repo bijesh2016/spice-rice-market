@@ -1,4 +1,5 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Search } from "lucide-react";
 import { Header } from "@/components/layout/Header";
@@ -8,7 +9,7 @@ import { ProductSort, SortOption } from "@/components/products/ProductSort";
 import { ProductGridCard } from "@/components/products/ProductGridCard";
 import { ProductListCard } from "@/components/products/ProductListCard";
 import { Input } from "@/components/ui/input";
-import { products } from "@/data/products";
+import { products, categories } from "@/data/products";
 
 interface FilterState {
   category: string;
@@ -22,16 +23,29 @@ interface FilterState {
 }
 
 export default function Products() {
+  const { category: categoryParam } = useParams<{ category?: string }>();
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortOption>('featured');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [filters, setFilters] = useState<FilterState>({
-    category: 'all',
+    category: categoryParam || 'all',
     brands: [],
     priceRange: { min: 0, max: 100 },
     dietary: { halal: false, vegetarian: false },
     inStock: false,
   });
+
+  // Update category filter when URL changes
+  useEffect(() => {
+    if (categoryParam) {
+      const validCategory = categories.find(c => c.slug === categoryParam);
+      if (validCategory) {
+        setFilters(prev => ({ ...prev, category: categoryParam }));
+      }
+    } else {
+      setFilters(prev => ({ ...prev, category: 'all' }));
+    }
+  }, [categoryParam]);
 
   const filteredProducts = useMemo(() => {
     let result = [...products];

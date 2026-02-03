@@ -30,7 +30,7 @@ export function ProductListCard({ product, index = 0 }: ProductListCardProps) {
       className="group relative bg-card rounded-xl overflow-hidden shadow-card hover:shadow-elevated transition-all duration-300 flex"
     >
       {/* Image */}
-      <Link to={`/products/${product.slug}`} className="block w-32 sm:w-48 flex-shrink-0">
+      <Link to={`/product/${product.slug}`} className="block w-32 sm:w-48 flex-shrink-0">
         <div className="relative h-full bg-secondary/50 overflow-hidden">
           <img
             src={product.image}
@@ -62,7 +62,7 @@ export function ProductListCard({ product, index = 0 }: ProductListCardProps) {
           <div className="flex items-start justify-between gap-2">
             <div>
               <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">{product.category}</p>
-              <Link to={`/products/${product.slug}`}>
+              <Link to={`/product/${product.slug}`}>
                 <h3 className="font-semibold text-foreground hover:text-primary transition-colors line-clamp-1">
                   {product.name}
                 </h3>

@@ -96,7 +96,7 @@ export default function ProductDetail() {
             {product.category}
           </Link>
           <span>/</span>
-          <span className="text-foreground">{product.name}</span>
+          <span className="text-foreground truncate">{product.name}</span>
         </nav>
 
         {/* Back Button */}

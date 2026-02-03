@@ -2,47 +2,11 @@ import { motion } from "framer-motion";
 import { ArrowRight, Flame } from "lucide-react";
 import { ProductCard } from "./ProductCard";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import { products } from "@/data/products";
 
-const offerProducts = [
-  {
-    id: "1",
-    name: "India Gate Basmati Rice Premium",
-    price: 7.99,
-    originalPrice: 12.99,
-    image: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&h=400&fit=crop",
-    category: "Rice",
-    weight: "5 Kg",
-    badge: "Best Seller"
-  },
-  {
-    id: "2",
-    name: "Wai Wai Instant Noodles Pack",
-    price: 4.99,
-    originalPrice: 6.99,
-    image: "https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?w=400&h=400&fit=crop",
-    category: "Noodles",
-    weight: "Pack of 10"
-  },
-  {
-    id: "3",
-    name: "Fresh Goat Meat Curry Cut",
-    price: 14.99,
-    originalPrice: 19.99,
-    image: "https://images.unsplash.com/photo-1603048297172-c92544798d5a?w=400&h=400&fit=crop",
-    category: "Meat",
-    weight: "1 Kg",
-    badge: "Fresh"
-  },
-  {
-    id: "4",
-    name: "Organic Turmeric Powder",
-    price: 3.49,
-    originalPrice: 5.99,
-    image: "https://images.unsplash.com/photo-1615485500704-8e990f9900f7?w=400&h=400&fit=crop",
-    category: "Spice",
-    weight: "200g"
-  },
-];
+// Get products with discounts for the offers section
+const offerProducts = products.filter(p => p.originalPrice).slice(0, 4);
 
 export function OffersSection() {
   return (
@@ -68,9 +32,11 @@ export function OffersSection() {
               Fresh deals on your favorite products. Hurry, these prices won't last!
             </p>
           </div>
-          <Button variant="outline" className="gap-2 group shrink-0">
-            View All Offers
-            <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+          <Button variant="outline" className="gap-2 group shrink-0" asChild>
+            <Link to="/products">
+              View All Offers
+              <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
           </Button>
         </motion.div>
 

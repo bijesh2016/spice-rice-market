@@ -2,43 +2,13 @@ import { motion } from "framer-motion";
 import { ArrowRight, Award, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProductCard } from "./ProductCard";
+import { Link } from "react-router-dom";
+import { products } from "@/data/products";
 
-const premiumProducts = [
-  {
-    id: "p1",
-    name: "Premium Lamb Leg Boneless",
-    price: 24.99,
-    image: "https://images.unsplash.com/photo-1588168333986-5078d3ae3976?w=400&h=400&fit=crop",
-    category: "Premium Meat",
-    weight: "1 Kg",
-    badge: "Premium"
-  },
-  {
-    id: "p2",
-    name: "Wild Caught Himalayan Trout",
-    price: 18.99,
-    image: "https://images.unsplash.com/photo-1544943910-4c1dc44aab44?w=400&h=400&fit=crop",
-    category: "Seafood",
-    weight: "500g"
-  },
-  {
-    id: "p3",
-    name: "Free Range Chicken Whole",
-    price: 12.99,
-    image: "https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=400&h=400&fit=crop",
-    category: "Premium Meat",
-    weight: "1.5 Kg",
-    badge: "Organic"
-  },
-  {
-    id: "p4",
-    name: "Premium Goat Curry Cut",
-    price: 16.99,
-    image: "https://images.unsplash.com/photo-1602470521006-aaea8b2ecc24?w=400&h=400&fit=crop",
-    category: "Premium Meat",
-    weight: "1 Kg"
-  },
-];
+// Get premium meat products (Dice category) or featured products
+const premiumProducts = products
+  .filter(p => p.categorySlug === 'dice' || p.isHalal)
+  .slice(0, 4);
 
 export function PremiumCollection() {
   return (
@@ -69,10 +39,12 @@ export function PremiumCollection() {
                 </p>
               </div>
             </div>
-            <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground gap-2 group shrink-0">
-              <Sparkles className="h-4 w-4" />
-              Explore Collection
-              <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground gap-2 group shrink-0" asChild>
+              <Link to="/products/dice">
+                <Sparkles className="h-4 w-4" />
+                Explore Collection
+                <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
             </Button>
           </div>
         </motion.div>

@@ -8,25 +8,25 @@ import { Link } from "react-router-dom";
 
 const navItems = [
   { label: "Home", href: "/" },
-  { label: "Tazza Tazza Offer", href: "/offers", highlight: true },
-  { label: "Rice", href: "/rice" },
-  { label: "Spice", href: "/spice" },
-  { label: "Dice", href: "/dice" },
+  { label: "Tazza Tazza Offer", href: "/products?offer=true", highlight: true },
+  { label: "Rice", href: "/products/rice" },
+  { label: "Spice", href: "/products/spice" },
+  { label: "Dice", href: "/products/dice" },
   { 
     label: "Best Sellers", 
-    href: "/best-sellers",
+    href: "/products?featured=true",
     dropdown: ["Meat & Poultry", "Frozen Foods", "Snacks", "Beverages"]
   },
   { 
     label: "Fridge & Freezers", 
-    href: "/frozen",
+    href: "/products/fridge-freezers",
     dropdown: ["Frozen Momos", "Ice Cream", "Frozen Vegetables", "Ready Meals"]
   },
-  { label: "Noodles", href: "/noodles" },
-  { label: "Lentils & Beans", href: "/lentils" },
+  { label: "Noodles", href: "/products/noodles" },
+  { label: "Lentils & Beans", href: "/products/lentils-beans" },
   { 
     label: "Pantry Items", 
-    href: "/pantry",
+    href: "/products",
     dropdown: ["Cooking Oil", "Flour", "Sugar & Jaggery", "Canned Goods"]
   },
   { label: "Recipes", href: "/recipes" },

@@ -29,7 +29,7 @@ export function ProductGridCard({ product, index = 0 }: ProductGridCardProps) {
       className="group relative bg-card rounded-2xl overflow-hidden shadow-card hover:shadow-elevated transition-all duration-300"
     >
       {/* Image Container */}
-      <Link to={`/products/${product.slug}`} className="block">
+      <Link to={`/product/${product.slug}`} className="block">
         <div className="relative aspect-square bg-secondary/50 overflow-hidden">
           <img
             src={product.image}
@@ -79,7 +79,7 @@ export function ProductGridCard({ product, index = 0 }: ProductGridCardProps) {
       {/* Content */}
       <div className="p-4 space-y-2">
         <p className="text-xs text-muted-foreground uppercase tracking-wide">{product.category}</p>
-        <Link to={`/products/${product.slug}`}>
+        <Link to={`/product/${product.slug}`}>
           <h3 className="font-semibold text-foreground line-clamp-2 min-h-[2.5rem] hover:text-primary transition-colors">
             {product.name}
           </h3>
