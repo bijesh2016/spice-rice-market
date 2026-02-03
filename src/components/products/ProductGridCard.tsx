@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Product } from "@/data/products";
 import { useCart } from "@/contexts/CartContext";
+import { useWishlist } from "@/contexts/WishlistContext";
 import { Link } from "react-router-dom";
 
 interface ProductGridCardProps {
@@ -13,10 +14,12 @@ interface ProductGridCardProps {
 
 export function ProductGridCard({ product, index = 0 }: ProductGridCardProps) {
   const { addToCart, isInCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
   const discount = product.originalPrice 
     ? Math.round((1 - product.price / product.originalPrice) * 100) 
     : 0;
   const inCart = isInCart(product.id);
+  const inWishlist = isInWishlist(product.id);
 
   return (
     <motion.div
@@ -54,8 +57,14 @@ export function ProductGridCard({ product, index = 0 }: ProductGridCardProps) {
           </div>
 
           {/* Wishlist Button */}
-          <button className="absolute top-3 right-3 w-9 h-9 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background">
-            <Heart className="h-4 w-4 text-foreground/70 hover:text-cta transition-colors" />
+          <button 
+            className={`absolute top-3 right-3 w-9 h-9 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center transition-all hover:bg-background ${inWishlist ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
+            onClick={(e) => {
+              e.preventDefault();
+              toggleWishlist(product);
+            }}
+          >
+            <Heart className={`h-4 w-4 transition-colors ${inWishlist ? 'fill-cta text-cta' : 'text-foreground/70 hover:text-cta'}`} />
           </button>
 
           {/* Out of Stock Overlay */}
