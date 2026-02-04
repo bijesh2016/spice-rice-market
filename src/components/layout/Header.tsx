@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
 import { CartSidebar } from "@/components/cart/CartSidebar";
+import { SearchAutocomplete } from "@/components/search/SearchAutocomplete";
 import { Link } from "react-router-dom";
 
 const navItems = [
@@ -34,6 +35,7 @@ const navItems = [
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [cartOpen, setCartOpen] = useState(false);
   const { getCartCount } = useCart();
@@ -67,20 +69,18 @@ export function Header() {
 
             {/* Search Bar - Desktop */}
             <div className="hidden md:flex flex-1 max-w-xl">
-              <div className="relative w-full">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <input
-                  type="text"
-                  placeholder="Search for rice, spices, momos..."
-                  className="w-full pl-11 pr-4 py-3 rounded-full border bg-secondary/50 focus:bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
-                />
-              </div>
+              <SearchAutocomplete className="w-full" />
             </div>
 
             {/* Actions */}
             <div className="flex items-center gap-2">
               {/* Mobile Search */}
-              <Button variant="ghost" size="icon" className="md:hidden">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="md:hidden"
+                onClick={() => setMobileSearchOpen(true)}
+              >
                 <Search className="h-5 w-5" />
               </Button>
 
@@ -199,6 +199,35 @@ export function Header() {
                 </Link>
               ))}
             </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Mobile Search Modal */}
+      <AnimatePresence>
+        {mobileSearchOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm md:hidden"
+          >
+            <div className="container py-4">
+              <div className="flex items-center gap-2 mb-4">
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  onClick={() => setMobileSearchOpen(false)}
+                >
+                  <X className="h-5 w-5" />
+                </Button>
+                <span className="font-medium">Search</span>
+              </div>
+              <SearchAutocomplete 
+                autoFocus 
+                onClose={() => setMobileSearchOpen(false)} 
+              />
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
