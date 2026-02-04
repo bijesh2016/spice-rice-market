@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Search } from "lucide-react";
 import { Header } from "@/components/layout/Header";
@@ -24,18 +24,22 @@ interface FilterState {
 
 export default function Products() {
   const { category: categoryParam } = useParams<{ category?: string }>();
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchParams] = useSearchParams();
+  const searchQueryParam = searchParams.get("search") || "";
+  const brandParam = searchParams.get("brand") || "";
+  
+  const [searchQuery, setSearchQuery] = useState(searchQueryParam);
   const [sortBy, setSortBy] = useState<SortOption>('featured');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [filters, setFilters] = useState<FilterState>({
     category: categoryParam || 'all',
-    brands: [],
+    brands: brandParam ? [brandParam] : [],
     priceRange: { min: 0, max: 100 },
     dietary: { halal: false, vegetarian: false },
     inStock: false,
   });
 
-  // Update category filter when URL changes
+  // Update filters when URL changes
   useEffect(() => {
     if (categoryParam) {
       const validCategory = categories.find(c => c.slug === categoryParam);
@@ -46,6 +50,17 @@ export default function Products() {
       setFilters(prev => ({ ...prev, category: 'all' }));
     }
   }, [categoryParam]);
+
+  // Update search and brand from URL params
+  useEffect(() => {
+    setSearchQuery(searchQueryParam);
+  }, [searchQueryParam]);
+
+  useEffect(() => {
+    if (brandParam) {
+      setFilters(prev => ({ ...prev, brands: [brandParam] }));
+    }
+  }, [brandParam]);
 
   const filteredProducts = useMemo(() => {
     let result = [...products];
