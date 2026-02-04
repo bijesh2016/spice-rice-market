@@ -1,19 +1,58 @@
-import { BarChart3, Package, Users, ShoppingCart, TrendingUp, Settings } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from "react";
+import { BarChart3, Settings, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-const stats = [
-  { label: "Total Orders", value: "1,234", change: "+12%", icon: ShoppingCart },
-  { label: "Products", value: "456", change: "+3%", icon: Package },
-  { label: "Customers", value: "2,890", change: "+8%", icon: Users },
-  { label: "Revenue", value: "$45,678", change: "+15%", icon: TrendingUp },
-];
+import { Link } from "react-router-dom";
+import { AdminSidebar } from "@/components/admin/AdminSidebar";
+import { DashboardOverview } from "@/components/admin/DashboardOverview";
+import { ProductManagement } from "@/components/admin/ProductManagement";
+import { OrderManagement } from "@/components/admin/OrderManagement";
+import { InventoryTracking } from "@/components/admin/InventoryTracking";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function Admin() {
+  const [activeSection, setActiveSection] = useState('dashboard');
+
+  const renderContent = () => {
+    switch (activeSection) {
+      case 'dashboard':
+        return <DashboardOverview />;
+      case 'products':
+        return <ProductManagement />;
+      case 'orders':
+        return <OrderManagement />;
+      case 'inventory':
+        return <InventoryTracking />;
+      case 'customers':
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Customer Management</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground">Customer management coming soon...</p>
+            </CardContent>
+          </Card>
+        );
+      case 'settings':
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Settings</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground">Settings panel coming soon...</p>
+            </CardContent>
+          </Card>
+        );
+      default:
+        return <DashboardOverview />;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-secondary/30">
       {/* Admin Header */}
-      <header className="bg-background border-b px-6 py-4">
+      <header className="bg-background border-b px-6 py-4 sticky top-0 z-50">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
@@ -24,52 +63,30 @@ export default function Admin() {
               <p className="text-sm text-muted-foreground">Dashboard</p>
             </div>
           </div>
-          <Button variant="outline" size="icon">
-            <Settings className="h-4 w-4" />
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" asChild>
+              <Link to="/" className="gap-2">
+                <Home className="h-4 w-4" />
+                <span className="hidden sm:inline">View Store</span>
+              </Link>
+            </Button>
+            <Button variant="outline" size="icon">
+              <Settings className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="p-6">
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          {stats.map((stat) => (
-            <Card key={stat.label}>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
-                  {stat.label}
-                </CardTitle>
-                <stat.icon className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stat.value}</div>
-                <p className="text-xs text-accent">{stat.change} from last month</p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {/* Placeholder sections */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Recent Orders</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-sm">Order management coming soon...</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Inventory Alerts</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-sm">Inventory tracking coming soon...</p>
-            </CardContent>
-          </Card>
-        </div>
-      </main>
+      {/* Main Layout */}
+      <div className="flex">
+        <AdminSidebar 
+          activeSection={activeSection} 
+          onSectionChange={setActiveSection} 
+        />
+        <main className="flex-1 p-6 overflow-auto">
+          {renderContent()}
+        </main>
+      </div>
     </div>
   );
 }
