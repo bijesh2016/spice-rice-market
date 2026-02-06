@@ -36,6 +36,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { mockOrders, Order } from "@/data/mockOrders";
+import { OrderDetailDrawer } from "./OrderDetailDrawer";
 
 const statusColors: Record<Order['status'], string> = {
   pending: 'bg-yellow-100 text-yellow-700',
@@ -56,6 +57,13 @@ const paymentStatusColors: Record<Order['paymentStatus'], string> = {
 export function OrderManagement() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const handleViewOrder = (order: Order) => {
+    setSelectedOrder(order);
+    setDrawerOpen(true);
+  };
 
   const filteredOrders = useMemo(() => {
     return mockOrders.filter((order) => {
@@ -219,7 +227,10 @@ export function OrderManagement() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem className="gap-2">
+                        <DropdownMenuItem 
+                          className="gap-2"
+                          onClick={() => handleViewOrder(order)}
+                        >
                           <Eye className="h-4 w-4" />
                           View Details
                         </DropdownMenuItem>
@@ -246,6 +257,12 @@ export function OrderManagement() {
           </Table>
         </CardContent>
       </Card>
+
+      <OrderDetailDrawer 
+        order={selectedOrder}
+        open={drawerOpen}
+        onOpenChange={setDrawerOpen}
+      />
     </div>
   );
 }
