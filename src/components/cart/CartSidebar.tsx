@@ -138,8 +138,9 @@ export function CartSidebar({ open, onOpenChange }: CartSidebarProps) {
                 <Button 
                   className="w-full bg-primary hover:bg-primary/90 h-12 text-base font-semibold"
                   onClick={() => onOpenChange(false)}
+                  asChild
                 >
-                  Proceed to Checkout
+                  <Link to="/checkout">Proceed to Checkout</Link>
                 </Button>
                 <Button
                   variant="outline"
