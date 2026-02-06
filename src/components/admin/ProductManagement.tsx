@@ -33,11 +33,35 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { products, categories } from "@/data/products";
+import { products, categories, Product } from "@/data/products";
+import { ProductFormModal } from "./ProductFormModal";
+import { toast } from "sonner";
 
 export function ProductManagement() {
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+  const handleAddProduct = () => {
+    setSelectedProduct(null);
+    setIsModalOpen(true);
+  };
+
+  const handleEditProduct = (product: Product) => {
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteProduct = (product: Product) => {
+    // Mock delete - in real app, this would call API
+    toast.success(`Product "${product.name}" deleted`);
+  };
+
+  const handleSaveProduct = (productData: Partial<Product>) => {
+    // Mock save - in real app, this would call API
+    console.log("Saving product:", productData);
+  };
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
@@ -56,7 +80,7 @@ export function ProductManagement() {
           <h2 className="text-2xl font-bold">Products</h2>
           <p className="text-muted-foreground">Manage your product catalog</p>
         </div>
-        <Button className="gap-2">
+        <Button className="gap-2" onClick={handleAddProduct}>
           <Plus className="h-4 w-4" />
           Add Product
         </Button>
@@ -170,11 +194,17 @@ export function ProductManagement() {
                           <Eye className="h-4 w-4" />
                           View
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="gap-2">
+                        <DropdownMenuItem 
+                          className="gap-2"
+                          onClick={() => handleEditProduct(product)}
+                        >
                           <Edit className="h-4 w-4" />
                           Edit
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="gap-2 text-destructive">
+                        <DropdownMenuItem 
+                          className="gap-2 text-destructive"
+                          onClick={() => handleDeleteProduct(product)}
+                        >
                           <Trash2 className="h-4 w-4" />
                           Delete
                         </DropdownMenuItem>
@@ -187,6 +217,13 @@ export function ProductManagement() {
           </Table>
         </CardContent>
       </Card>
+
+      <ProductFormModal
+        open={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        product={selectedProduct}
+        onSave={handleSaveProduct}
+      />
     </div>
   );
 }
