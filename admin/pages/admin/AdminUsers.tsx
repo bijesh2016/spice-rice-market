@@ -3,7 +3,7 @@ import { Plus, Edit, MoreHorizontal, Shield, Ban, UserCheck } from "lucide-react
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { DataTable } from "@/components/admin/DataTable";
+import { DataTable } from "@/admin/components/admin/DataTable";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { mockUsers, User } from "@/data/mockData";
+import { mockUsers, User } from "@/admin/data/mockData";
 import { format } from "date-fns";
 
 const AdminUsers = () => {

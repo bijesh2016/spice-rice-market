@@ -6,7 +6,7 @@ import {
   TrendingUp,
   AlertTriangle,
 } from "lucide-react";
-import { StatCard } from "@/components/admin/StatCard";
+import { StatCard } from "@/admin/components/admin/StatCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -15,7 +15,7 @@ import {
   orderStatusData,
   topProducts,
   mockOrders,
-} from "@/data/mockData";
+} from "@/admin/data/mockData";
 import {
   LineChart,
   Line,

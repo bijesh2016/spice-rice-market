@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model User {
+  id       String    @id @default(cuid())
+  name     String
+  email    String    @unique
+  role     String
+  image    String?
+  products Product[] @relation("UserProducts")
+}
+
+model Category {
+  id       String    @id @default(cuid())
+  name     String
+  slug     String    @unique
+  status   String
+  image    String?
+  products Product[] @relation("ProductCategories")
+}
+
+model Brand {
+  id       String    @id @default(cuid())
+  name     String
+  slug     String    @unique
+  status   String
+  image    String?
+  products Product[]
+}
+
+model Product {
+  id            String      @id @default(cuid())
+  name          String
+  slug          String      @unique
+  price         Int
+  discount      Int         @default(0)
+  afterDiscount Int
+  description   String?
+  featured      Boolean     @default(false)
+  status        String
+  images        Json?
+  attributes    Json?
+
+  seller   User @relation("UserProducts", fields: [sellerId], references: [id])
+  sellerId String
+
+  brand   Brand?     @relation(fields: [brandId], references: [id])
+  brandId String?
+
+  categories Category[] @relation("ProductCategories")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

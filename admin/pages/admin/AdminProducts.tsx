@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Plus, Edit, Trash2, Eye, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { DataTable } from "@/components/admin/DataTable";
+import { DataTable } from "@/admin/components/admin/DataTable";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,7 +27,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { mockProducts, mockCategories, mockBrands, Product } from "@/data/mockData";
+import { mockProducts, mockCategories, mockBrands, Product } from "@/admin/data/mockData";
 
 const AdminProducts = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);

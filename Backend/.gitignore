@@ -42,3 +42,5 @@ npm-cache/
 .pnpm-store/
 
 docker-data/
+
+/src/generated/prisma

@@ -1,123 +1,83 @@
+const { Status } = require("../../config/constant");
 const mongoose = require("mongoose");
-
 const ProductSchema = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: true,
-      trim: true
-    },
-
-    slug: {
-      type: String,
-      required: true,
-      unique: true,
-      lowercase: true
-    },
-
-    description: {
-      type: String,
-      required: true
-    },
-
-    shortDescription: {
-      type: String
-    },
-
-    price: {
-      type: Number,
-      required: true
-    },
-
-    compareAtPrice: {
-      type: Number
-    },
-
-    category: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Category",
-      required: true
-    },
-
-    categories: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Category"
-      }
-    ],
-
-    brand: {
-      type: String
-    },
-
-    images: [
-      {
-        type: String
-      }
-    ],
-
-    thumbnail: {
-      type: String
-    },
-
-    attributes: {
-      type: Map,
-      of: String
-      // e.g. { color: "Black", material: "Cotton" }
-    },
-
-    variants: [
-      {
-        sku: String,
-        attributes: {
-          size: String,
-          color: String
+    {
+        name: {
+            type: String,
+            required: true
         },
-        price: Number,
-        compareAtPrice: Number,
-        image: String,
-        isActive: {
-          type: Boolean,
-          default: true
-        }
-      }
-    ],
-
-    ratings: {
-      average: {
-        type: Number,
-        default: 0
-      },
-      count: {
-        type: Number,
-        default: 0
-      }
+        slug: {
+            type: String,
+            required: true,
+            unique: true,
+        },
+        price: {
+            type: Number,
+            required: true,
+            min: 10000
+        },
+        discount: {
+            type: Number,
+            min: 0,
+            max: 80,
+            default: 0
+        },
+        afterDiscount: {
+            type: Number,
+            required: true
+        },
+        description: {
+            type: String,
+        },
+        category: [{
+            type: mongoose.Types.ObjectId,
+            ref: "Category",
+            // required: true,
+            default: null
+        }],
+        brand: {
+            type: mongoose.Types.ObjectId,
+            ref: "Brand",
+            default: null
+        },
+        featured: {
+            type: Boolean,
+            default: false
+        },
+        seller: {
+            type: mongoose.Types.ObjectId,
+            ref: "User",
+            required: true
+        },
+        attributes: [{
+            name: String,
+            value: [String]
+        }],
+        images: [{
+            url: String,
+            optimizedUrl: String,
+        }],
+        status: {
+            type: String,
+            enum: Object.values(Status),
+            default: Status.INACTIVE,
+        },
+        createdBy: {
+            type: mongoose.Schema.ObjectId,
+            ref: "User",
+            default: null,
+        },
+        updatedBy: {
+            type: mongoose.Schema.ObjectId,
+            ref: "User",
+            default: null,
+        },
     },
-
-    tags: [String],
-
-    seo: {
-      title: String,
-      description: String,
-      keywords: [String]
-    },
-
-    isActive: {
-      type: Boolean,
-      default: true
-    },
-
-    isFeatured: {
-      type: Boolean,
-      default: false
-    },
-
-    createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User"
+    {
+        timestamps: true,
+        autoCreate: true,
+        autoIndex: true,
     }
-  },
-  { timestamps: true }
 );
-
-module.exports = mongoose.model("Product", ProductSchema);
+const ProductModel = mongoose.model("Product", ProductSchema);
+module.exports = ProductModel;

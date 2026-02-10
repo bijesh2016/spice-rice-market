@@ -1,7 +1,7 @@
 import { Eye, MoreHorizontal, Printer, RotateCcw, X, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { DataTable } from "@/components/admin/DataTable";
+import { DataTable } from "@/admin/components/admin/DataTable";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { mockOrders, Order } from "@/data/mockData";
+import { mockOrders, Order } from "@/admin/data/mockData";
 import { format } from "date-fns";
 
 const AdminOrders = () => {

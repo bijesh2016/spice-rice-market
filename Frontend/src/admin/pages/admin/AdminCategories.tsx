@@ -3,7 +3,7 @@ import { Plus, Edit, Trash2, MoreHorizontal, FolderTree } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DataTable } from "@/components/admin/DataTable";
+import { DataTable } from "@/admin/components/admin/DataTable";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,7 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { mockCategories, Category } from "@/data/mockData";
+import { mockCategories, Category } from "@/admin/data/mockData";
 
 const AdminCategories = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);

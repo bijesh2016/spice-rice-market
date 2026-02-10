@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { mockReviews, Review } from "@/data/mockData";
+import { mockReviews, Review } from "@/admin/data/mockData";
 import { format } from "date-fns";
 
 const AdminReviews = () => {

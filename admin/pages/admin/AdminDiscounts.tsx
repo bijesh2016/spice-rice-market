@@ -3,7 +3,7 @@ import { Plus, Edit, Trash2, MoreHorizontal, Percent, Gift, Truck, Copy } from "
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DataTable } from "@/components/admin/DataTable";
+import { DataTable } from "@/admin/components/admin/DataTable";
 import { Progress } from "@/components/ui/progress";
 import {
   DropdownMenu,
@@ -27,7 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { mockDiscounts, Discount } from "@/data/mockData";
+import { mockDiscounts, Discount } from "@/admin/data/mockData";
 import { format } from "date-fns";
 
 const AdminDiscounts = () => {

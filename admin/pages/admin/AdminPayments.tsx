@@ -1,7 +1,7 @@
 import { CreditCard, DollarSign, TrendingUp, AlertCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { mockOrders } from "@/data/mockData";
+import { mockOrders } from "@/admin/data/mockData";
 import {
   LineChart,
   Line,

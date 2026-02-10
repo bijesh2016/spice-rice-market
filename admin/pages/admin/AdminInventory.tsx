@@ -2,8 +2,8 @@ import { AlertTriangle, Package, TrendingDown, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DataTable } from "@/components/admin/DataTable";
-import { mockProducts, Product } from "@/data/mockData";
+import { DataTable } from "@/admin/components/admin/DataTable";
+import { mockProducts, Product } from "@/admin/data/mockData";
 import {
   BarChart,
   Bar,

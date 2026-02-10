@@ -2,7 +2,7 @@ import { RotateCcw, Check, X, Clock, DollarSign } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { mockOrders } from "@/data/mockData";
+import { mockOrders } from "@/admin/data/mockData";
 import { format } from "date-fns";
 
 const AdminRefunds = () => {
