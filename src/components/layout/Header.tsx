@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Search, ShoppingCart, User, Menu, X, ChevronDown, Gift } from "lucide-react";
+import { Search, ShoppingCart, User, Menu, X, ChevronDown, Gift, Heart } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
+import { useWishlist } from "@/contexts/WishlistContext";
 import { CartSidebar } from "@/components/cart/CartSidebar";
 import { SearchAutocomplete } from "@/components/search/SearchAutocomplete";
 import { Link } from "react-router-dom";
@@ -39,7 +40,9 @@ export function Header() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [cartOpen, setCartOpen] = useState(false);
   const { getCartCount } = useCart();
+  const { getWishlistCount } = useWishlist();
   const cartCount = getCartCount();
+  const wishlistCount = getWishlistCount();
 
   return (
     <>
@@ -82,6 +85,23 @@ export function Header() {
                 onClick={() => setMobileSearchOpen(true)}
               >
                 <Search className="h-5 w-5" />
+              </Button>
+
+              {/* Wishlist */}
+              <Button variant="ghost" size="icon" className="relative" asChild>
+                <Link to="/wishlist">
+                  <Heart className="h-5 w-5" />
+                  {wishlistCount > 0 && (
+                    <motion.span
+                      key={wishlistCount}
+                      initial={{ scale: 0.5 }}
+                      animate={{ scale: 1 }}
+                      className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-cta text-cta-foreground text-xs font-bold flex items-center justify-center"
+                    >
+                      {wishlistCount}
+                    </motion.span>
+                  )}
+                </Link>
               </Button>
 
               {/* Account */}
