@@ -134,7 +134,7 @@
 };
 
  const FILE_TYPES = {
-  IMAGE: ["image/jpeg", "image/png", "image/webp"],
+  IMAGE: ["image/jpeg", "image/png", "image/webp","image/jpg"],
   DOCUMENT: ["application/pdf"],
 };
 

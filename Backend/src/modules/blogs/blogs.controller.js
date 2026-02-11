@@ -1,71 +1,125 @@
-const {all} = require("axios");
+const {Status}=require('../../config/constant');
+const BlogService=require('./blogs.service');
+const { notifyCreate, notifyUpdate, notifyDelete } = require('../../utilities/notificationHelper');
 
-class blogsController {
-    createBlogs=async(req,res,next)=> {
-        try {
+
+class BlogController{
+    createBlog=async(req,res,next)=>{
+        try{
+            const blogData=req.body;
+
+            if (req.file) {
+                blogData.image = `/uploads/images/${req.file.filename}`;
+            }
+
+            const createdBlog=await BlogService.createBlog(blogData);
+
+            await notifyCreate(req.user?.id, "blog", createdBlog, req.app.get('io'));
+
             res.json({
-                data:{},
-                message: "Blogs Created",
-                status: "BLOGS_CREATED_SUCCESSFULLY",
-                options: null
-            })
-        } catch (exception) {
-            next(exception)
+                data:createdBlog,
+                message:"Blog created successfully",
+                status:"BLOG_CREATE_SUCCESS",
+                option:null
+            });
+        }   catch(exception){
+            next(exception);
+        }
+
+    }
+
+    getBlogs=async(req,res,next)=>{
+        try{
+            const filter=req.query || {};
+            const blogs=await BlogService.getBlogs(filter);
+            res.json({
+                data:blogs,
+                message:"Blog list fetched successfully",
+                status:"BLOG_LIST_SUCCESS",
+                option:null
+            });
+        }   catch(exception){
+            console.error('Error fetching blogs:', exception);
+            next(exception);
         }
     }
 
-    getBlogsById=async(req,res,next)=> {
+    getBlogById=async(req,res,next)=>{
         try{
+            const id=req.params.id;
+            const blog=await BlogService.getBlogById(id);
             res.json({
-                data:{},
-                message: "Get Blogs by Id ",
-                status: "BLOGS_BY_ID_SUCCESSFULLY",
-                options: null
-            })
-        }catch(exception) {
-            next(exception)
+                data:blog,
+                message:"Blog detail fetched successfully",
+                status:"BLOG_DETAIL_SUCCESS",
+                option:null
+            });
+        }
+        catch(exception){
+            next(exception);
         }
     }
 
-    getAllBlogs=async(req,res,next)=> {
+    getBlogDetailById=async(req,res,next)=>{
         try{
+            const id=req.params.id;
+            const blogDetail=await BlogService.getBlogDetailById(id);
             res.json({
-                data:{},
-                message:"Get all Blogs",
-                status:"GET ALL BLOGS SUCCESSFULLY",
-                options: null
-            })
-        }catch(exception) {
-            next(exception)
+                data:blogDetail,
+                message:"Blog detail fetched successfully",
+                status:"BLOG_DETAIL_SUCCESS",
+                option:null
+            });
+        }
+        catch(exception){
+            next(exception);
         }
     }
 
-    updateBlogs=async(req,res,next)=> {
+    updateBlog=async(req,res,next)=>{
         try{
+            const id=req.params.id;
+            const payload={...req.body};
+
+            // Handle file upload if new image is provided
+            if (req.file) {
+                payload.image = `/uploads/images/${req.file.filename}`;
+            }
+
+            const updatedBlog=await BlogService.updateBlog(id,payload);
+
+            await notifyUpdate(req.user?.id, "blog", updatedBlog, req.app.get('io'));
+
             res.json({
-                data:{},
-                message: "Blogs Updated",
-                status: "BLOGS_UPDATE_SUCCESSFULLY",
-                options: null
-            })
-        }catch(exception) {
-            next(exception)
+                data:updatedBlog,
+                message:"Blog updated successfully",
+                status:"BLOG_UPDATE_SUCCESS",
+                option:null
+            });
+        }
+        catch(exception){
+            next(exception);
         }
     }
-
-    deleteBlogs=async(req,res,next)=> {
+    deleteBlog=async(req,res,next)=>{
         try{
+            const id=req.params.id;
+            const deletedBlog = await BlogService.deleteBlog(id);
+
+            await notifyDelete(req.user?.id, "blog", deletedBlog, req.app.get('io'));
+
             res.json({
-                data:{},
-                message: "Blogs Deleted",
-                status: "BLOGS_DELETED_SUCCESSFULLY",
-                options: null
-            })
-        }catch(exception) {
-            next(exception)
+                data:null,
+                message:"Blog deleted successfully",
+                status:"BLOG_DELETE_SUCCESS",
+                option:null
+            });
+        }
+        catch(exception){
+            next(exception);
         }
     }
 }
 
-const blogsCtrl=new BlogsController();
-module.exports=blogsCtrl;
+const blogCtrl=new BlogController();
+module.exports=blogCtrl;

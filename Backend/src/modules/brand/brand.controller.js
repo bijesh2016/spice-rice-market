@@ -1,4 +1,4 @@
-const { Status } = require("../../config/constants");
+const { Status } = require("../../config/constant");
 const brandSvc = require("./brand.service");
 const productSvc = require('../product/product.service')
 
@@ -68,6 +68,64 @@ class BrandController {
     }
   };
 
+    brandsForHome = async (req, res, next) => {
+        try {
+            let filter = {
+                status: Status.ACTIVE
+            };
+            if (req.query["search"]) {
+                filter = {
+                    ...filter,
+                    name: new RegExp(req.query.search, "i"),
+                };
+            }
+            let { data, pagination } = await brandSvc.getAllList(req.query, filter);
+            res.json({
+                data: data,
+                message: "Brand List",
+                status: "SUCCESS",
+                options: {
+                    pagination,
+                },
+            });
+        } catch (exception) {
+            next(exception);
+        }
+    };
+
+    productsByBrandSlug = async (req, res, next) => {
+        try {
+            this.#brandDetail = await brandSvc.getSingleRowByFilter({
+                slug: req.params.slug,
+                status: Status.ACTIVE
+            })
+            if(!this.#brandDetail) {
+                throw {
+                    code: 422,
+                    message: "Brand not found",
+                    status: "NOT_FOUND"
+                }
+            }
+
+            let {data, pagination} = await productSvc.getAllList(req.query, {
+                brand: this.#brandDetail._id,
+                status: Status.ACTIVE
+            })
+
+            res.json({
+                data: {
+                    detail: this.#brandDetail,
+                    product: data
+                },
+                message: "Product detail",
+                status: "PRODUCT_DETAIL_SUCCESS",
+                options: {pagination}
+            })
+        } catch(exception) {
+            next(exception)
+        }
+    };
+
   brandUpdateById = async (req, res, next) => {
     try {
       await this.#validateBrandById(req.params.id);
@@ -99,66 +157,6 @@ class BrandController {
         message: "Banner deleted successfully",
         status: "SUCCESS",
         options: null
-      })
-
-
-    } catch(exception) {
-      next(exception)
-    }
-  };
-
-  brandsForHome = async (req, res, next) => {
-    try {
-      let filter = {
-        status: Status.ACTIVE
-      };
-      if (req.query["search"]) {
-        filter = {
-          ...filter,
-          name: new RegExp(req.query.search, "i"),
-        };
-      }
-      let { data, pagination } = await brandSvc.getAllList(req.query, filter);
-      res.json({
-        data: data,
-        message: "Brand List",
-        status: "SUCCESS",
-        options: {
-          pagination,
-        },
-      });
-    } catch (exception) {
-      next(exception);
-    }
-  };
-
-  productsByBrandSlug = async (req, res, next) => {
-    try {
-      this.#brandDetail = await brandSvc.getSingleRowByFilter({
-        slug: req.params.slug,
-        status: Status.ACTIVE
-      })
-      if(!this.#brandDetail) {
-        throw {
-          code: 422,
-          message: "Brand not found",
-          status: "NOT_FOUND"
-        }
-      }
-
-      let {data, pagination} = await productSvc.getAllList(req.query, {
-        brand: this.#brandDetail._id,
-        status: Status.ACTIVE
-      })
-
-      res.json({
-        data: {
-          detail: this.#brandDetail,
-          product: data
-        },
-        message: "Product detail",
-        status: "PRODUCT_DETAIL_SUCCESS",
-        options: {pagination}
       })
     } catch(exception) {
       next(exception)

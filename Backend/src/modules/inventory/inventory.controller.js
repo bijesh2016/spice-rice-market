@@ -1,6 +1,7 @@
 class InventoryController {
     createInventory=async(req,res,next)=>{
         try{
+            const
             res.json({
                 data:{},
                 message:"Inventory created successfully",

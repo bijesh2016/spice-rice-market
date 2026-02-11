@@ -20,6 +20,5 @@ const createCategorySchema=joi.object({
         keywords:joi.array().items(joi.string().min(1).max(50)).optional()
     }).optional()
 
-
 });
 module.exports={createCategorySchema};

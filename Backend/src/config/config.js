@@ -77,11 +77,7 @@ const paymentConfig = {
   paypal: paypalConfig,
   khalti: khaltiConfig,
   eSewa: eSewaConfig,
-};  
-
-
-
-
+};
 
 module.exports = {
     serverConfig,

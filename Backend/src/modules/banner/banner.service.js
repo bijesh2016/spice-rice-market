@@ -2,7 +2,6 @@ class bannerService {
   transformCreatePayload=async (req) => {
     try {
         let data = req.body;
-        data.createdBy = req.loggedInUser._id;
         data.slug = slugify(data.name.replace("'", "").replace('"', ""), {
           lower: true,
         });

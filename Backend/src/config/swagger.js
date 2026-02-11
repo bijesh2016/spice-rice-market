@@ -1,154 +1,123 @@
-const swaggerJSDoc = require('swagger-jsdoc');
-const swaggerUi = require('swagger-ui-express');
+const swaggerAutogen = require('swagger-autogen')();
+const path = require('path');
 
-const options = {
-  definition: {
-    openapi: '3.0.0',
-    info: {
-      title: 'ATM Locator API',
-      version: '1.0.0',
-      description: 'API documentation for your ATM Locator backend',
+const doc = {
+  info: {
+    title: 'Spice Rice Market API',
+    description: 'Complete E-Commerce API Documentation for Spice and Rice Market Platform',
+    version: '1.0.0',
+    contact: {
+      name: 'API Support',
+      email: 'support@spicericemarket.com'
     },
-    components: {
-      securitySchemes: {
-        bearerAuth: {
-          type: 'http',
-          scheme: 'bearer',
-          bearerFormat: 'JWT',
-        },
-      },
-      schemas: {
-        RegisterUser: {
-          type: 'object',
-          properties: {
-            name: { type: 'string', minLength: 3, maxLength: 250 },
-            email: { type: 'string', format: 'email' },
-            password: { type: 'string' },
-            role: { type: 'string', enum: ['admin', 'customer', 'other'] },
-            gender: { type: 'string', enum: ['male', 'female', 'others'] },
-            address: { type: 'string' },
-            dob: { type: 'string', format: 'date' },
-            phone: { type: 'string' },
-          },
-          required: ['name', 'email', 'password', 'gender'],
-        },
-        LoginUser: {
-          type: 'object',
-          properties: {
-            email: { type: 'string', format: 'email' },
-            password: { type: 'string' },
-          },
-          required: ['email', 'password'],
-        },
-        User: {
-          type: 'object',
-          properties: {
-            _id: { type: 'string' },
-            name: { type: 'string' },
-            email: { type: 'string' },
-            role: { type: 'string' },
-            gender: { type: 'string' },
-            address: { type: 'string' },
-            dob: { type: 'string', format: 'date' },
-            phone: { type: 'string' },
-            status: { type: 'string' },
-            image: {
-              type: 'object',
-              properties: {
-                publicId: { type: 'string' },
-                url: { type: 'string' },
-                thumbUrl: { type: 'string' },
-              },
-            },
-            createdAt: { type: 'string', format: 'date-time' },
-            updatedAt: { type: 'string', format: 'date-time' },
-          },
-        },
-        ATM: {
-          type: 'object',
-          properties: {
-            _id: { type: 'string' },
-            name: { type: 'string' },
-            bank: { type: 'string' },
-            slug: { type: 'string' },
-            latitude: { type: 'string' },
-            longitude: { type: 'string' },
-            address: { type: 'string' },
-            phone: { type: 'string' },
-            status: { type: 'string' },
-            branch: {
-              type: 'array',
-              items: { type: 'string' },
-            },
-          },
-        },
-        Bank: {
-          type: 'object',
-          properties: {
-            _id: { type: 'string' },
-            name: { type: 'string' },
-            slug: { type: 'string' },
-            email: { type: 'string' },
-            latitude: { type: 'string' },
-            longitude: { type: 'string' },
-            address: { type: 'string' },
-            phone: { type: 'number' },
-            status: { type: 'string' },
-            branch: { type: 'string' },
-            website: { type: 'string' },
-          },
-        },
-        Branch: {
-          type: 'object',
-          properties: {
-            _id: { type: 'string' },
-            name: { type: 'string' },
-            slug: { type: 'string' },
-            latitude: { type: 'string' },
-            longitude: { type: 'string' },
-            bank: { type: 'string' },
-            services: {
-              type: 'array',
-              items: { type: 'string' },
-            },
-            address: { type: 'string' },
-            phone: { type: 'string' },
-            status: { type: 'string' },
-          },
-        },
-        Review: {
-          type: 'object',
-          properties: {
-            _id: { type: 'string' },
-            name: { type: 'string' },
-            email: { type: 'string', format: 'email' },
-            message: { type: 'string' },
-            createdAt: { type: 'string', format: 'date-time' },
-            updatedAt: { type: 'string', format: 'date-time' },
-          },
-        },
-        Notification: {
-          type: 'object',
-          properties: {
-            _id: { type: 'string' },
-            title: { type: 'string' },
-            message: { type: 'string' },
-            read: { type: 'boolean' },
-            user: { type: 'string' },
-            createdAt: { type: 'string', format: 'date-time' },
-          },
-        },
-      },
-    },
-    servers: [
-      {
-        url: process.env.SWAGGER_SERVER_URL || 'http://localhost:9000/api/atm_locator',
-      },
-    ],
+    license: {
+      name: 'ISC'
+    }
   },
-  apis: ['./src/modules/**/*.js'],
+  host: process.env.API_HOST || 'localhost:3000',
+  basePath: '/api',
+  schemes: ['http', 'https'],
+  consumes: ['application/json', 'multipart/form-data'],
+  produces: ['application/json'],
+  securityDefinitions: {
+    bearerAuth: {
+      type: 'apiKey',
+      in: 'header',
+      name: 'Authorization',
+      description: 'JWT Authorization header using the Bearer scheme. Example: Bearer {token}'
+    },
+    cookieAuth: {
+      type: 'apiKey',
+      in: 'cookie',
+      name: 'token'
+    }
+  },
+  definitions: {
+    User: {
+      type: 'object',
+      properties: {
+        _id: { type: 'string', example: '507f1f77bcf86cd799439011' },
+        firstName: { type: 'string', example: 'John' },
+        lastName: { type: 'string', example: 'Doe' },
+        email: { type: 'string', example: 'john@example.com' },
+        phone: { type: 'string', example: '+1234567890' },
+        role: { type: 'string', enum: ['user', 'admin', 'seller'], example: 'user' },
+        isActive: { type: 'boolean', example: true },
+        createdAt: { type: 'string', format: 'date-time' }
+      }
+    },
+    Product: {
+      type: 'object',
+      properties: {
+        _id: { type: 'string' },
+        name: { type: 'string', example: 'Basmati Rice' },
+        description: { type: 'string' },
+        price: { type: 'number', example: 499.99 },
+        stock: { type: 'integer', example: 100 },
+        category: { type: 'string', example: 'Rice' },
+        image: { type: 'string', format: 'url' },
+        rating: { type: 'number', example: 4.5 },
+        createdAt: { type: 'string', format: 'date-time' }
+      }
+    },
+    Order: {
+      type: 'object',
+      properties: {
+        _id: { type: 'string' },
+        userId: { type: 'string' },
+        items: { type: 'array', items: { type: 'object' } },
+        totalAmount: { type: 'number', example: 1999.99 },
+        status: { type: 'string', enum: ['pending', 'processing', 'shipped', 'delivered'], example: 'pending' },
+        createdAt: { type: 'string', format: 'date-time' }
+      }
+    },
+    ErrorResponse: {
+      type: 'object',
+      properties: {
+        success: { type: 'boolean', example: false },
+        message: { type: 'string' },
+        error: { type: 'string' }
+      }
+    },
+    SuccessResponse: {
+      type: 'object',
+      properties: {
+        success: { type: 'boolean', example: true },
+        message: { type: 'string' },
+        data: { type: 'object' }
+      }
+    }
+  }
 };
 
-const swaggerSpec = swaggerJSDoc(options);
+const outputFile = path.join(__dirname, '../../swagger-output.json');
+const routes = [
+  path.join(__dirname, '../modules/auth/auth.router.js'),
+  path.join(__dirname, '../modules/product/product.router.js'),
+  path.join(__dirname, '../modules/order/order.router.js'),
+  path.join(__dirname, '../modules/cart/cart.router.js'),
+  path.join(__dirname, '../modules/category/category.router.js'),
+  path.join(__dirname, '../modules/brand/brand.router.js'),
+  path.join(__dirname, '../modules/banner/banner.router.js'),
+  path.join(__dirname, '../modules/discount/discount.router.js'),
+  path.join(__dirname, '../modules/payment/payment.router.js'),
+  path.join(__dirname, '../modules/shipping/shipping.router.js'),
+  path.join(__dirname, '../modules/review/review.router.js'),
+  path.join(__dirname, '../modules/rating/rating.router.js'),
+  path.join(__dirname, '../modules/blogs/blogs.router.js'),
+  path.join(__dirname, '../modules/wishlist/wishlist.router.js'),
+  path.join(__dirname, '../modules/checkout/checkout.router.js'),
+  path.join(__dirname, '../modules/inventory/inventory.router.js'),
+  path.join(__dirname, '../modules/notification/notification.router.js'),
+  path.join(__dirname, '../modules/refund/refund.router.js'),
+  path.join(__dirname, '../modules/search/search.router.js'),
+  path.join(__dirname, '../modules/filter/filter.router.js')
+];
 
-module.exports = { swaggerUi, swaggerSpec };
+swaggerAutogen(outputFile, routes, doc).then(() => {
+  console.log('✅ Swagger documentation generated successfully!');
+  process.exit(0);
+}).catch((err) => {
+  console.error('❌ Swagger generation failed:', err.message);
+  process.exit(1);
+});

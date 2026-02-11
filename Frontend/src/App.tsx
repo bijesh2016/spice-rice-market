@@ -1,10 +1,4 @@
-
-import {Toaster} from "@/components/ui/toaster";
-import {Toaster as Sonner} from "@/components/ui/sonner";
-import {TooltipProvider} from "@/components/ui/tooltip";
-import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
-import {BrowserRouter, Routes, Route} from "react-router-dom";
-
+import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -17,7 +11,7 @@ import Products from "./pages/Products";
 import NotFound from "./pages/NotFound";
 
 // Admin imports
-import {AdminLayout} from "./components/admin/AdminLayout";
+import {AdminLayout} from "./admin/components/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminProducts from "./pages/admin/AdminProducts";
 import AdminOrders from "./pages/admin/AdminOrders";

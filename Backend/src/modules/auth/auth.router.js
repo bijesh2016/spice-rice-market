@@ -1,19 +1,82 @@
 const authRouter = require("express").Router();
-const loginCheck = require("../../middleware/auth.middleware");
-const uploader = require("../../middleware/file-upload.middleware")
+const loginCheck = require("../../middlewares/auth.middleware");
+const uploader = require("../../middlewares/file-upload.middleware")
 const authCtrl = require("./auth.controller");
-const {registerDataDTO, loginDTO, forgetPasswordDTO, resetPasswordDTO}= require("./auth.validator");
-const { bodyValidator } = require("../../middleware/request-validator.middleware");
+const {registerDataDTO, loginDTO, forgetPasswordDTO, resetPasswordDTO} = require("./auth.validator");
+// const {bodyValidator} = require("../../middlewares/validator.middleware");
 
+/**
+ * @route   POST /api/auth/register
+ * @desc    Register a new user account
+ * @access  Public
+ * @param   {File} image - User profile image
+ * @returns {Object} Success message with user data
+ */
+authRouter.post("/register", authCtrl.register);
 
-authRouter.post("/register",uploader().single('image'), bodyValidator(registerDataDTO), authCtrl.register);
+/**
+ * @route   GET /api/auth/activate
+ * @desc    Verify user email activation token
+ * @access  Public
+ * @param   {String} token - Activation token (query parameter)
+ * @returns {Object} Activation status
+ */
 authRouter.get("/activate", authCtrl.verifyActivationToken);
-authRouter.post("/login", bodyValidator(loginDTO), authCtrl.login);    // email, password
-authRouter.get('/me', loginCheck(), authCtrl.getLoggedInUserProfile)
-authRouter.get('/refresh', authCtrl.refreshToken)
-authRouter.post('/forget-password', bodyValidator(forgetPasswordDTO),  authCtrl.sendForgetPasswordRequest)
-authRouter.get("/verify-forget-token/:token", authCtrl.verifyForgetPasswordToken) //
-authRouter.put("/reset-password/:token",bodyValidator(resetPasswordDTO), authCtrl.resetPasswordRequest);     // password, confirmPassword
 
+/**
+ * @route   POST /api/auth/login
+ * @desc    User login with email and password
+ * @access  Public
+ * @returns {Object} JWT token and user data
+ */
+authRouter.post("/login",  authCtrl.login);
 
-module.exports = authRouter
+/**
+ * @route   GET /api/auth/me
+ * @desc    Get current logged-in user profile
+ * @access  Private
+ * @returns {Object} User profile data
+ */
+authRouter.get('/me',  authCtrl.getLoggedInUserProfile);
+
+/**
+ * @route   GET /api/auth/refresh
+ * @desc    Refresh JWT token
+ * @access  Private
+ * @returns {Object} New JWT token
+ */
+authRouter.get('/refresh', authCtrl.refreshToken);
+
+/**
+ * @route   POST /api/auth/forget-password
+ * @desc    Request password reset token via email
+ * @access  Public
+ * @returns {Object} Success message with email confirmation
+ */
+authRouter.post('/forget-password',  authCtrl.sendForgetPasswordRequest);
+
+/**
+ * @route   GET /api/auth/verify-forget-token/:token
+ * @desc    Verify password reset token validity
+ * @access  Public
+ * @returns {Object} Token validation status
+ */
+authRouter.get("/verify-forget-token/:token", authCtrl.verifyForgetPasswordToken);
+
+/**
+ * @route   PUT /api/auth/reset-password/:token
+ * @desc    Reset user password using token
+ * @access  Public
+ * @returns {Object} Success message
+ */
+authRouter.put("/reset-password/:token",  authCtrl.resetPasswordRequest);
+
+/**
+ * @route   POST /api/auth/logout
+ * @desc    User logout from System
+ * @access  Public
+ * @returns {Object} Success Message for Logout
+ */
+authRouter.post("/logout",authCtrl.logout)
+
+module.exports = authRouter;
