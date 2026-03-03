@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Search, ShoppingCart, User, Menu, X, ChevronDown, Gift } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -6,25 +7,40 @@ import { Button } from "@/components/ui/button";
 const navItems = [
   { label: "Home", href: "/" },
   { label: "Tazza Tazza Offer", href: "/offers", highlight: true },
-  { label: "Rice", href: "/rice" },
-  { label: "Spice", href: "/spice" },
-  { label: "Dice", href: "/dice" },
+  { label: "Rice", href: "/products/rice" },
+  { label: "Spice", href: "/products/spice" },
+  { label: "Dice", href: "/products/dice" },
   { 
     label: "Best Sellers", 
-    href: "/best-sellers",
-    dropdown: ["Meat & Poultry", "Frozen Foods", "Snacks", "Beverages"]
+    href: "/products/best-sellers",
+    dropdown: [
+      { label: "Meat & Poultry", href: "/products/dice" },
+      { label: "Frozen Foods", href: "/products/fridge-freezers" },
+      { label: "Snacks", href: "/products/noodles" },
+      { label: "All Products", href: "/products" },
+    ]
   },
   { 
     label: "Fridge & Freezers", 
-    href: "/frozen",
-    dropdown: ["Frozen Momos", "Ice Cream", "Frozen Vegetables", "Ready Meals"]
+    href: "/products/fridge-freezers",
+    dropdown: [
+      { label: "Frozen Momos", href: "/products/fridge-freezers" },
+      { label: "Ice Cream", href: "/products/fridge-freezers" },
+      { label: "Frozen Vegetables", href: "/products/fridge-freezers" },
+      { label: "All Frozen", href: "/products/fridge-freezers" },
+    ]
   },
-  { label: "Noodles", href: "/noodles" },
-  { label: "Lentils & Beans", href: "/lentils" },
+  { label: "Noodles", href: "/products/noodles" },
+  { label: "Lentils & Beans", href: "/products/lentils-beans" },
   { 
     label: "Pantry Items", 
-    href: "/pantry",
-    dropdown: ["Cooking Oil", "Flour", "Sugar & Jaggery", "Canned Goods"]
+    href: "/products/pantry",
+    dropdown: [
+      { label: "Cooking Oil", href: "/products/pantry" },
+      { label: "Flour", href: "/products/pantry" },
+      { label: "Sugar & Jaggery", href: "/products/pantry" },
+      { label: "All Pantry", href: "/products/pantry" },
+    ]
   },
   { label: "Recipes", href: "/recipes" },
 ];
@@ -50,7 +66,7 @@ export function Header() {
           {/* Top Row - Logo, Search, Actions */}
           <div className="flex items-center justify-between py-4 gap-4">
             {/* Logo */}
-            <a href="/" className="flex items-center gap-2 shrink-0">
+            <Link to="/" className="flex items-center gap-2 shrink-0">
               <div className="w-10 h-10 rounded-full bg-gradient-hero flex items-center justify-center">
                 <span className="text-primary-foreground font-display font-bold text-lg">K</span>
               </div>
@@ -58,7 +74,7 @@ export function Header() {
                 <span className="font-display text-xl font-bold text-primary">Kyoudai</span>
                 <span className="font-display text-xl font-bold text-accent">Mart</span>
               </div>
-            </a>
+            </Link>
 
             {/* Search Bar - Desktop */}
             <div className="hidden md:flex flex-1 max-w-xl">
@@ -115,8 +131,8 @@ export function Header() {
                 onMouseEnter={() => item.dropdown && setActiveDropdown(item.label)}
                 onMouseLeave={() => setActiveDropdown(null)}
               >
-                <a
-                  href={item.href}
+                <Link
+                  to={item.href}
                   className={`
                     flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medium transition-colors
                     ${item.highlight 
@@ -127,7 +143,7 @@ export function Header() {
                 >
                   {item.label}
                   {item.dropdown && <ChevronDown className="h-3 w-3" />}
-                </a>
+                </Link>
 
                 {/* Dropdown */}
                 <AnimatePresence>
@@ -140,13 +156,13 @@ export function Header() {
                       className="absolute top-full left-0 mt-1 w-48 bg-background rounded-lg shadow-elevated border py-2 z-50"
                     >
                       {item.dropdown.map((subItem) => (
-                        <a
-                          key={subItem}
-                          href={`${item.href}/${subItem.toLowerCase().replace(/\s+/g, '-')}`}
+                        <Link
+                          key={subItem.label}
+                          to={subItem.href}
                           className="block px-4 py-2 text-sm text-foreground/80 hover:text-foreground hover:bg-secondary transition-colors"
                         >
-                          {subItem}
-                        </a>
+                          {subItem.label}
+                        </Link>
                       ))}
                     </motion.div>
                   )}
@@ -168,9 +184,9 @@ export function Header() {
           >
             <nav className="container py-4 space-y-1">
               {navItems.map((item) => (
-                <a
+                <Link
                   key={item.label}
-                  href={item.href}
+                  to={item.href}
                   className={`
                     block px-4 py-3 rounded-lg text-sm font-medium transition-colors
                     ${item.highlight 
@@ -181,7 +197,7 @@ export function Header() {
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.label}
-                </a>
+                </Link>
               ))}
             </nav>
           </motion.div>
