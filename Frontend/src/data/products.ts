@@ -291,6 +291,66 @@ export const products: Product[] = [
     stockCount: 34,
     tags: ['momo', 'frozen', 'nepali'],
     isHalal: true
+  },
+  {
+    id: 'p13',
+    name: 'Mustard Oil (Kachi Ghani)',
+    slug: 'mustard-oil-kachi-ghani-1l',
+    price: 7.99,
+    image: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400&h=400&fit=crop',
+    images: ['https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=600&h=600&fit=crop'],
+    category: 'Pantry Items',
+    categorySlug: 'pantry',
+    brand: 'Fortune',
+    weight: '1 Litre',
+    description: 'Cold-pressed mustard oil with strong aroma. Essential for Bengali and North Indian cooking.',
+    rating: 4.5,
+    reviewCount: 145,
+    inStock: true,
+    stockCount: 90,
+    tags: ['oil', 'cooking', 'mustard'],
+    isVegetarian: true
+  },
+  {
+    id: 'p14',
+    name: 'Aashirvaad Whole Wheat Atta',
+    slug: 'aashirvaad-atta-5kg',
+    price: 11.99,
+    originalPrice: 13.99,
+    image: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=400&h=400&fit=crop',
+    images: ['https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&h=600&fit=crop'],
+    category: 'Pantry Items',
+    categorySlug: 'pantry',
+    brand: 'Aashirvaad',
+    weight: '5 KG',
+    badge: 'Best Seller',
+    description: 'Premium whole wheat flour for soft rotis. Made from the finest MP wheat.',
+    rating: 4.7,
+    reviewCount: 534,
+    inStock: true,
+    stockCount: 200,
+    tags: ['flour', 'wheat', 'atta'],
+    isVegetarian: true,
+    isFeatured: true
+  },
+  {
+    id: 'p15',
+    name: 'Jaggery (Gud) Block',
+    slug: 'jaggery-gud-block-1kg',
+    price: 6.49,
+    image: 'https://images.unsplash.com/photo-1604431696980-07e518647610?w=400&h=400&fit=crop',
+    images: ['https://images.unsplash.com/photo-1604431696980-07e518647610?w=600&h=600&fit=crop'],
+    category: 'Pantry Items',
+    categorySlug: 'pantry',
+    brand: 'Patanjali',
+    weight: '1 KG',
+    description: 'Natural unrefined cane jaggery. Rich in iron and minerals.',
+    rating: 4.3,
+    reviewCount: 87,
+    inStock: true,
+    stockCount: 65,
+    tags: ['sweetener', 'natural', 'jaggery'],
+    isVegetarian: true
   }
 ];
 
@@ -302,6 +362,7 @@ export const categories = [
   { name: 'Noodles', slug: 'noodles', count: products.filter(p => p.categorySlug === 'noodles').length },
   { name: 'Lentils & Beans', slug: 'lentils-beans', count: products.filter(p => p.categorySlug === 'lentils-beans').length },
   { name: 'Fridge & Freezers', slug: 'fridge-freezers', count: products.filter(p => p.categorySlug === 'fridge-freezers').length },
+  { name: 'Pantry Items', slug: 'pantry', count: products.filter(p => p.categorySlug === 'pantry').length },
 ];
 
 export const brands = [

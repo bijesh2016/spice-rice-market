@@ -1,4 +1,5 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Search } from "lucide-react";
 import { Header } from "@/components/layout/Header";
@@ -21,7 +22,31 @@ interface FilterState {
   inStock: boolean;
 }
 
+// Map URL slugs to category slugs
+const categoryMap: Record<string, string> = {
+  'rice': 'rice',
+  'spice': 'spice',
+  'dice': 'dice',
+  'noodles': 'noodles',
+  'lentils-beans': 'lentils-beans',
+  'fridge-freezers': 'fridge-freezers',
+  'pantry': 'pantry',
+  'best-sellers': 'best-sellers',
+};
+
+const categoryTitles: Record<string, string> = {
+  'rice': 'Rice',
+  'spice': 'Spices',
+  'dice': 'Meat & Poultry',
+  'noodles': 'Noodles',
+  'lentils-beans': 'Lentils & Beans',
+  'fridge-freezers': 'Fridge & Freezers',
+  'pantry': 'Pantry Items',
+  'best-sellers': 'Best Sellers',
+};
+
 export default function Products() {
+  const { slug } = useParams<{ slug: string }>();
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortOption>('featured');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
@@ -32,6 +57,20 @@ export default function Products() {
     dietary: { halal: false, vegetarian: false },
     inStock: false,
   });
+
+  // Sync URL category with filter state
+  useEffect(() => {
+    if (slug && categoryMap[slug]) {
+      if (slug === 'best-sellers') {
+        setFilters(prev => ({ ...prev, category: 'all' }));
+        setSortBy('rating');
+      } else {
+        setFilters(prev => ({ ...prev, category: categoryMap[slug] }));
+      }
+    } else if (!slug) {
+      setFilters(prev => ({ ...prev, category: 'all' }));
+    }
+  }, [slug]);
 
   const filteredProducts = useMemo(() => {
     let result = [...products];
@@ -111,7 +150,7 @@ export default function Products() {
             animate={{ opacity: 1, y: 0 }}
             className="text-3xl md:text-4xl font-display font-bold text-primary-foreground mb-4"
           >
-            Our Products
+            {slug && categoryTitles[slug] ? categoryTitles[slug] : 'Our Products'}
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
