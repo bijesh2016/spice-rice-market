@@ -1,7 +1,7 @@
 const { Status, AppConfig } = require("../../config/constant");
 // const { randomStringGenerator } = require("../../utils/helpers");
 const authSvc = require("./auth.service");
-// const bcrypt = require('bcryptjs')
+const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken")
 
 class AuthController {
@@ -65,43 +65,42 @@ class AuthController {
       // email registered or not
       const user = await authSvc.getSingleUserByFilter({email: email});
       if(!user) {
-        // if not user registered
-        // throw {
-        //   code: 422,
-        //   message: "User not found",
-        //   status: "USER_NOT_FOUND"
-        // }
+        throw {
+          code: 422,
+          message: "User not found",
+          status: "USER_NOT_FOUND"
+        }
       }
 
       // user exists
-      if(!user.isEmailVerified || user.status === Status.INACTIVE || user.activationToken) {
-        // throw {
-        //   code: 422,
-        //   message: "User not activated or email not verified",
-        //   status: "USER_NOT_VERIFIED"
-        // }
+      if(user.status === Status.INACTIVE) {
+        throw {
+          code: 422,
+          message: "User is inactive",
+          status: "USER_NOT_ACTIVE"
+        }
       }
 
-      // password verify
-      // if(!bcrypt.compareSync(password, user.password)) {
-      //   throw {
-      //     code: 422,
-      //     message: "Credentials does not match",
-      //     status: "CREDENTIAL_DOES_NOT_MATCH"
-      //   }
-      // }
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+      if(!isPasswordValid) {
+        throw {
+          code: 422,
+          message: "Credentials does not match",
+          status: "CREDENTIAL_DOES_NOT_MATCH"
+        }
+      }
 
       let token = jwt.sign({
         sub: user._id,
         typ: "Bearer",
-      // }, AppConfig.jwtSecret, {
+      }, AppConfig.jwtSecret, {
         expiresIn: "15min"
       }) // expiry time, 180minute
 
       let refreshToken = jwt.sign({
         sub:user._id,
         typ: "Refresh",
-      // }, AppConfig.jwtSecret, {
+      }, AppConfig.jwtSecret, {
         expiresIn: "1day"
       })
 
@@ -139,11 +138,11 @@ class AuthController {
         email: email
       })
       if(!userDetail) {
-        // throw {
-        //   code: 422,
-        //   message: "User not found",
-        //   status: "AUTH_USER_NOT_FOUND"
-        // }
+        throw {
+          code: 422,
+          message: "User not found",
+          status: "AUTH_USER_NOT_FOUND"
+        }
       }
       // user found 
       const updated = await authSvc.updateSingleUserByFilter({
@@ -174,11 +173,11 @@ class AuthController {
         forgetPasswordToken: token
       })
       if(!userDetail) {
-        // throw {
-        //   code: 422,
-        //   message: "User not found",
-        //   status: "AUTH_USER_NOT_FOUND",
-        // };
+        throw {
+          code: 422,
+          message: "User not found",
+          status: "AUTH_USER_NOT_FOUND",
+        };
       }
 
       await authSvc.updateSingleUserByFilter({
@@ -186,7 +185,7 @@ class AuthController {
       }, {
         forgetPasswordToken: null, 
         expiryTokenTime: null, 
-        // password: bcrypt.hashSync(password, 10)
+        password: await bcrypt.hash(password, 10)
       })
 
       // notify 
@@ -210,11 +209,11 @@ class AuthController {
         forgetPasswordToken: token
       });
       if(!userDetail) {
-        // throw {
-        //   code: 422,
-        //   message: "User not found",
-        //   status: "AUTH_USER_NOT_FOUND",
-        // };
+        throw {
+          code: 422,
+          message: "User not found",
+          status: "AUTH_USER_NOT_FOUND",
+        };
       }
 
       // 
@@ -274,42 +273,42 @@ class AuthController {
     try {
       let token = req.headers['authorization'] || null;
       if(!token)  {
-        // throw {
-        //   code: 401,
-        //   message: "Unauthorized",
-        //   status: "AUTH_REFRESH_TOKEN_EXPECTED"
-        // }
+        throw {
+          code: 401,
+          message: "Unauthorized",
+          status: "AUTH_REFRESH_TOKEN_EXPECTED"
+        }
       } else {
         token = token.split(" ").pop();
         const payload = jwt.verify(token, AppConfig.jwtSecret);
         if(payload.typ !== 'Refresh') {
-          // throw {
-          //   code: 403,
-          //   message: "Refresh token expected",
-          //   status: "AUTH_TOKEN_INVALID"
-          // }
+          throw {
+            code: 403,
+            message: "Refresh token expected",
+            status: "AUTH_TOKEN_INVALID"
+          }
         } else {
           const user = await authSvc.getSingleUserByFilter({
             _id: payload.sub
           })
           if(!user) {
-            // throw {
-            //   code: 401,
-            //   message: "Unauthorized",
-            //   status: "AUTH_UNKNOWN_USER",
-            // };
+            throw {
+              code: 401,
+              message: "Unauthorized",
+              status: "AUTH_UNKNOWN_USER",
+            };
           } else {
             let token = jwt.sign({
               sub: user._id,
               typ: "Bearer",
-            // }, AppConfig.jwtSecret, {
+            }, AppConfig.jwtSecret, {
               expiresIn: "15min"
             }) // expiry time, 180minute
 
             let refreshToken = jwt.sign({
               sub:user._id,
               typ: "Refresh",
-            // }, AppConfig.jwtSecret, {
+            }, AppConfig.jwtSecret, {
               expiresIn: "1day"
             })
 

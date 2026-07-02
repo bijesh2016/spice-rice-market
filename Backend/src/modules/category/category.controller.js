@@ -113,7 +113,7 @@ class CategoryController {
   categoriesForHome = async (req, res, next) => {
     try {
       let filter = {
-        status: Status.ACTIVE
+        isActive: true
       };
       if (req.query["search"]) {
         filter = {
@@ -139,7 +139,7 @@ class CategoryController {
     try {
       this.#categoryDetail = await categorySvc.getSingleRowByFilter({
         slug: req.params.slug,
-        status: Status.ACTIVE
+        isActive: true
       });
       if (!this.#categoryDetail) {
         throw {

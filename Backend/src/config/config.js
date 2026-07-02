@@ -27,6 +27,13 @@ const cloudinaryConfig = {
   apiSecret: process.env.CLOUDINARY_API_SECRET,
 };
 
+const s3Config = {
+  bucket: process.env.AWS_S3_BUCKET,
+  region: process.env.AWS_REGION,
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+};
+
 const jwtConfig = {
   secret: process.env.JWT_SECRET || 'your_jwt_secret',
   expiresIn: process.env.JWT_EXPIRES_IN || '1h',
@@ -62,6 +69,14 @@ const meiliConfig = {
     apiKey: process.env.MEILI_API_KEY || '',
 };  
 
+const MeiliClient = {
+  index: () => ({
+    addDocuments: async () => null,
+    deleteDocument: async () => null,
+    search: async () => ({ hits: [] }),
+  }),
+};
+
 const redisConfig = {
   host: process.env.REDIS_HOST || '127.0.0.1',
   port: process.env.REDIS_PORT || 6379,
@@ -84,9 +99,12 @@ module.exports = {
     mongoConfig,
     SMTPConfig,
     uploadConfig,
+    cloudinaryConfig,
+    CloudinaryConfig: cloudinaryConfig,
     jwtConfig,
     paymentConfig,
     otpConfig,
     meiliConfig,
+    MeiliClient,
     redisConfig,
 }

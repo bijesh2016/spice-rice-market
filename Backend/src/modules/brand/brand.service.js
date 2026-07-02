@@ -3,7 +3,7 @@ const slugify = require("slugify");
 const BrandModel = require("./brand.model");
 
 class BrandService {
-  transformCreatePayload = async (req) => {
+  transformCreatePayload = async(req) => {
     try {
       let data = req.body;
       data.slug = slugify(data.name.replace("'", "").replace('"', ""), {
@@ -19,9 +19,14 @@ class BrandService {
     }
   };
 
-  transformUpdatePayload = async (req, oldData) => {
+  transformUpdatePayload = async(req,oldData) => {
     try {
       let data = req.body;
+      if (data.name) {
+        data.slug = slugify(data.name.replace("'", "").replace('"', ""), {
+          lower: true,
+        });
+      }
       if (req.file) {
         data.image = await fileUploadSvc.fileupload(req.file.path, "brand/");
       } else {
@@ -96,12 +101,12 @@ class BrandService {
     }
   };
 
-  deleteSingleRowByFilter = async(filter) => {
+  deleteSingleRowByFilter = async (filter) => {
     try {
-      const data = await BrandModel.findOneAndDelete(filter)
+      const data = await BrandModel.findOneAndDelete(filter);
       return data;
-    } catch(exception) {
-      throw exception
+    } catch (exception) {
+      throw exception;
     }
   }
 }

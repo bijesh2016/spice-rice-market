@@ -11,6 +11,10 @@ class FileUploadService{
             throw exception
         }
     }
+
+    async fileupload(filepath, dir = '/') {
+        return this.uploadFile(filepath, dir);
+    }
 }
 
 const fileUploadSvc = new FileUploadService(

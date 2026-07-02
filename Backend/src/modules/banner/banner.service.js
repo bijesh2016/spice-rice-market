@@ -1,120 +1,90 @@
-class bannerService {
-  transformCreatePayload=async (req) => {
-    try {
-        let data = req.body;
-        data.slug = slugify(data.name.replace("'", "").replace('"', ""), {
-          lower: true,
-        });
-        if (req.file) {
-          data.image = await fileUploadSvc.fileupload(req.file.path, "banner/");
-        }
+const slugify = require("slugify");
+const fileUploadSvc = require("../../services/file-upload.service");
+const BannerModel = require("./banner.model");
 
-      return data;
-    } catch (exception) {
-      throw exception;
-    }
-  }
+class BannerService {
+  transformCreatePayload = async (req) => {
+    const data = { ...req.body };
 
-  transformUpdatePayload=async (req) => {
-    try {
-        let data = req.body;
-        data.updatedBy = req.loggedInUser._id;
-            if (req.file) {
-            data.image = await fileUploadSvc.fileupload(req.file.path, "banner/");
-        } else {
-          let oldData = await BannerModel.findOne({
-            _id: req.params.id,
-          });
-          data.image = oldData.image;
-        }
-      return data;
-    } catch (exception) {
-      throw exception;
+    if (data.title) {
+      data.slug = slugify(data.title.replace("'", "").replace('"', ""), {
+        lower: true,
+      });
     }
-  }
 
-  createBanner = async (req) => {
-    try {
-      const transformedPayload = await this.transformCreatePayload(req);
-      const banner = new BannerModel(transformedPayload);
-      return await banner.save();
-    } catch (exception) {
-      throw exception;
+    if (req.file) {
+      const uploaded = await fileUploadSvc.fileupload(req.file.path, "banner/");
+      data.image = uploaded.url;
     }
+
+    if (req.loggedInUser?._id) {
+      data.createdBy = req.loggedInUser._id;
+    }
+
+    return data;
+  };
+
+  transformUpdatePayload = async (req, oldData) => {
+    const data = { ...req.body };
+
+    if (data.title) {
+      data.slug = slugify(data.title.replace("'", "").replace('"', ""), {
+        lower: true,
+      });
+    }
+
+    if (req.file) {
+      const uploaded = await fileUploadSvc.fileupload(req.file.path, "banner/");
+      data.image = uploaded.url;
+    } else {
+      data.image = oldData.image;
+    }
+
+    if (req.loggedInUser?._id) {
+      data.updatedBy = req.loggedInUser._id;
+    }
+
+    return data;
+  };
+
+  createBanner = async (payload) => {
+    const banner = new BannerModel(payload);
+    return await banner.save();
   };
 
   getAllList = async (query, filter = {}) => {
-    try {
-      let limit = +query.limit || 10;
-      let page = +query.page || 1;
-      let skip = (page - 1) * limit;
-      let allData = await BannerModel.find(filter)
-        .populate("createdBy", ["_id", "name", "email", "role", "image"])
-        .populate("updatedBy", ["_id", "name", "email", "role", "image"])
-        .sort({ createdAt: "desc" })
-        .skip(skip)
-        .limit(limit);
-      let count = await BannerModel.countDocuments(filter);
-      return {
-        data: allData,
-        pagination: {
-          page: page,
-          limit: limit,
-          total: count,
-        },
-      };
-    } catch (exception) {
-      throw exception;
-    }
+    const limit = +query.limit || 10;
+    const page = +query.page || 1;
+    const skip = (page - 1) * limit;
+
+    const data = await BannerModel.find(filter)
+      .populate("createdBy", ["_id", "name", "email", "role", "image"])
+      .populate("updatedBy", ["_id", "name", "email", "role", "image"])
+      .sort({ createdAt: "desc" })
+      .skip(skip)
+      .limit(limit);
+
+    const total = await BannerModel.countDocuments(filter);
+
+    return {
+      data,
+      pagination: { page, limit, total },
+    };
   };
 
   getSingleRowByFilter = async (filter) => {
-    try {
-      let detail = await BannerModel.findOne(filter)
-        .populate("createdBy", ["_id", "name", "email", "role", "image"])
-        .populate("updatedBy", ["_id", "name", "email", "role", "image"]);
-      return detail;
-    } catch (exception) {
-      throw exception;
-    }
+    return await BannerModel.findOne(filter)
+      .populate("createdBy", ["_id", "name", "email", "role", "image"])
+      .populate("updatedBy", ["_id", "name", "email", "role", "image"]);
   };
 
   updateSingleDataByFilter = async (filter, data) => {
-    try {
-      let oldData = await BannerModel.findOne(filter);
-      if (!oldData) {
-        throw {
-          code: 422,
-          message: "Banner does not exists",
-          status: "NOT_FOUND",
-        };
-      }
-      if (data.image) {
-        data.image = {
-          url: data.image,
-          optimizedUrl: data.image,
-        };
-      }
-      const update = await BannerModel.findOneAndUpdate(
-        filter,
-        { $set: data },
-        { new: true },
-      );
-      return update;
-    } catch (exception) {
-      throw exception;
-    }
+    return await BannerModel.findOneAndUpdate(filter, { $set: data }, { new: true });
   };
 
   deleteSingleRowByFilter = async (filter) => {
-    try {
-      const data = await BannerModel.findOneAndDelete(filter);
-      return data;
-    } catch (exception) {
-      throw exception;
-    }
+    return await BannerModel.findOneAndDelete(filter);
   };
 }
 
-const bannerSvc = new bannerService();
-module.exports = bannerSvc;
+module.exports = new BannerService();

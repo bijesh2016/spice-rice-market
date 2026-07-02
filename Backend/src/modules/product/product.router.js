@@ -1,9 +1,9 @@
 const productRouter = require("express").Router()
 const productCtrl = require("./product.controller");
-const loginCheck = require("../../middleware/auth.middleware");
-const uploader = require("../../middleware/file-upload.middleware")
-const {bodyValidator} = require("../../middleware/request-validator.middleware")
-const { UserRoles } = require("../../config/constants");
+const loginCheck = require("../../middlewares/auth.middleware");
+const uploader = require("../../middlewares/file-upload.middleware")
+const {bodyValidator} = require("../../middlewares/validator.middleware")
+const { UserRoles } = require("../../config/constant");
 const { ProductDTO } = require("./product.validator");
 // update
 // delete

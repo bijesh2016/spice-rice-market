@@ -1,52 +1,71 @@
 const http = require("http");
-const app = require('./src/config/express.config');
-const { setupSwagger } = require('./src/config/swagger-setup');
-require('dotenv').config();
+require("dotenv").config();
 
-// Setup Swagger documentation
+const app = require("./src/config/express.config");
+const connectMongo = require("./src/config/mongo.config");
+const { setupSwagger } = require("./src/config/swagger-setup");
+
 setupSwagger(app);
 
-// Import routes - with try-catch for missing dependencies
-let authRouter;
-try {
-  authRouter = require('./src/modules/auth/auth.router');
-  app.use('/api/auth', authRouter);
-} catch (err) {
-  console.warn('⚠️  Auth routes not available:', err.message);
-}
+const routes = [
+  ["auth", "/api/auth"],
+  ["banner", "/api/banners"],
+  ["blogs", "/api/blogs"],
+  ["brand", "/api/brands"],
+  ["category", "/api/categories"],
+  ["product", "/api/products"],
+];
 
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Server is running', timestamp: new Date() });
+routes.forEach(([moduleName, apiPath]) => {
+  try {
+    const router = require(`./src/modules/${moduleName}/${moduleName}.router`);
+    app.use(apiPath, router);
+  } catch (err) {
+    console.warn(`Route ${apiPath} not available: ${err.message}`);
+  }
 });
 
-// 404 handler
-app.use((req, res) => {
-  res.status(404).json({ 
-    success: false, 
-    message: 'Route not found. Check /api-docs for available endpoints.' 
+app.get("/api/health", (req, res) => {
+  res.json({
+    status: "OK",
+    message: "Server is running",
+    timestamp: new Date(),
   });
 });
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error('Error:', err);
-  res.status(err.status || 500).json({
+app.use((req, res) => {
+  res.status(404).json({
     success: false,
-    message: err.message || 'Internal Server Error',
-    error: process.env.NODE_ENV === 'production' ? {} : err
+    message: "Route not found. Check /api-docs for available endpoints.",
+  });
+});
+
+app.use((err, req, res, next) => {
+  const statusCode = err.code || err.status || 500;
+
+  console.error("Error:", err);
+  res.status(statusCode).json({
+    success: false,
+    message: err.message || "Internal Server Error",
+    status: err.status || "ERROR",
+    error: process.env.NODE_ENV === "production" ? {} : err,
   });
 });
 
 const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || "localhost";
-
 const httpServer = http.createServer(app);
 
-httpServer.listen(PORT, HOST, () => {
-    console.log(`\n🚀 Server is listening on http://${HOST}:${PORT}`);
-    console.log(`📚 API Documentation: http://${HOST}:${PORT}/api-docs`);
-    console.log("✅ Backend is running...");
-    console.log("Press Ctrl+C to stop the server.\n");
-});
-
+connectMongo()
+  .then(() => {
+    httpServer.listen(PORT, HOST, () => {
+      console.log(`Server is listening on http://${HOST}:${PORT}`);
+      console.log(`API Documentation: http://${HOST}:${PORT}/api-docs`);
+      console.log("Backend is running.");
+      console.log("Press Ctrl+C to stop the server.");
+    });
+  })
+  .catch((err) => {
+    console.error("MongoDB connection failed:", err.message);
+    process.exit(1);
+  });

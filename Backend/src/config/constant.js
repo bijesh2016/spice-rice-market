@@ -1,6 +1,7 @@
  const USER_ROLES = {
   SUPER_ADMIN: "super_admin",
   ADMIN: "admin",
+  SELLER: "seller",
   VENDOR: "vendor",
   CUSTOMER: "customer",
 };
@@ -151,6 +152,28 @@ const STATUS={
     SUSPENDED: "suspended",
 };
 
+const GENDER = {
+    MALE: "male",
+    FEMALE: "female",
+    OTHER: "other",
+};
+
+const STATE_NAME = {
+    KOSHI: "koshi",
+    MADHESH: "madhesh",
+    BAGMATI: "bagmati",
+    GANDAKI: "gandaki",
+    LUMBINI: "lumbini",
+    KARNALI: "karnali",
+    SUDURPASHCHIM: "sudurpaschim",
+};
+
+const APP_CONFIG = {
+    env: process.env.NODE_ENV || "development",
+    frontendUrl: process.env.FRONTEND_URL || "http://localhost:8080/",
+    jwtSecret: process.env.JWT_SECRET || "change_this_secret",
+};
+
 module.exports = {
     USER_ROLES,
     AUTH_PROVIDERS,
@@ -176,5 +199,13 @@ module.exports = {
     FILE_TYPES,
     IMAGE_SIZES,
     STATUS,
+    Status: STATUS,
+    UserRoles: USER_ROLES,
+    Gender: GENDER,
+    GENDER,
+    StateName: STATE_NAME,
+    STATE_NAME,
+    AppConfig: APP_CONFIG,
+    APP_CONFIG,
 }
 

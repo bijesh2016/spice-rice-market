@@ -3,7 +3,7 @@ const loginCheck = require("../../middlewares/auth.middleware");
 const uploader = require("../../middlewares/file-upload.middleware")
 const authCtrl = require("./auth.controller");
 const {registerDataDTO, loginDTO, forgetPasswordDTO, resetPasswordDTO} = require("./auth.validator");
-// const {bodyValidator} = require("../../middlewares/validator.middleware");
+const {bodyValidator} = require("../../middlewares/validator.middleware");
 
 /**
  * @route   POST /api/auth/register
@@ -12,7 +12,7 @@ const {registerDataDTO, loginDTO, forgetPasswordDTO, resetPasswordDTO} = require
  * @param   {File} image - User profile image
  * @returns {Object} Success message with user data
  */
-authRouter.post("/register", authCtrl.register);
+authRouter.post("/register", bodyValidator(registerDataDTO), authCtrl.register);
 
 /**
  * @route   GET /api/auth/activate
@@ -29,7 +29,7 @@ authRouter.get("/activate", authCtrl.verifyActivationToken);
  * @access  Public
  * @returns {Object} JWT token and user data
  */
-authRouter.post("/login",  authCtrl.login);
+authRouter.post("/login", bodyValidator(loginDTO), authCtrl.login);
 
 /**
  * @route   GET /api/auth/me
@@ -37,7 +37,7 @@ authRouter.post("/login",  authCtrl.login);
  * @access  Private
  * @returns {Object} User profile data
  */
-authRouter.get('/me',  authCtrl.getLoggedInUserProfile);
+authRouter.get('/me', loginCheck(), authCtrl.getLoggedInUserProfile);
 
 /**
  * @route   GET /api/auth/refresh
@@ -53,7 +53,7 @@ authRouter.get('/refresh', authCtrl.refreshToken);
  * @access  Public
  * @returns {Object} Success message with email confirmation
  */
-authRouter.post('/forget-password',  authCtrl.sendForgetPasswordRequest);
+authRouter.post('/forget-password', bodyValidator(forgetPasswordDTO), authCtrl.sendForgetPasswordRequest);
 
 /**
  * @route   GET /api/auth/verify-forget-token/:token
@@ -69,7 +69,7 @@ authRouter.get("/verify-forget-token/:token", authCtrl.verifyForgetPasswordToken
  * @access  Public
  * @returns {Object} Success message
  */
-authRouter.put("/reset-password/:token",  authCtrl.resetPasswordRequest);
+authRouter.put("/reset-password/:token", bodyValidator(resetPasswordDTO), authCtrl.resetPasswordRequest);
 
 /**
  * @route   POST /api/auth/logout

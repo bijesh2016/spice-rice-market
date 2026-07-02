@@ -10,12 +10,12 @@ class CategoryService {
         lower: true,
       });
       if (req.file) {
-        data.image = await fileUploadSvc.fileupload(req.file.path, "category/");
+        const uploaded = await fileUploadSvc.fileupload(req.file.path, "category/");
+        data.image = uploaded.url;
       }
 
-      // parentId: 'null' ,'' => null
-      if(!data.parentId || data.parentId === 'null') {
-        data.parentId = null
+      if(!data.parent || data.parent === 'null') {
+        data.parent = null
       }
 
       data.createdBy = req.loggedInUser._id;
@@ -29,14 +29,14 @@ class CategoryService {
     try {
       let data = req.body;
       if (req.file) {
-        data.image = await fileUploadSvc.fileupload(req.file.path, "category/");
+        const uploaded = await fileUploadSvc.fileupload(req.file.path, "category/");
+        data.image = uploaded.url;
       } else {
         data.image = oldData.image;
       }
 
-      // parentId: 'null' ,'' => null
-      if (!data.parentId || data.parentId === "null") {
-        data.parentId = null;
+      if (!data.parent || data.parent === "null") {
+        data.parent = null;
       }
 
       data.updatedBy = req.loggedInUser._id;
@@ -63,9 +63,7 @@ class CategoryService {
       let skip = (page - 1) * limit;
 
       let allData = await CategoryModel.find(filter)
-        .populate("createdBy", ["_id", "name", "email", "role", "image"])
-        .populate("updatedBy", ["_id", "name", "email", "role", "image"])
-        .populate('parentId', ['_id',"name", "slug","image", "status"])
+        .populate('parent', ['_id',"name", "slug","image", "isActive"])
         .sort({ createdAt: "desc" })
         .skip(skip)
         .limit(limit);
@@ -87,9 +85,7 @@ class CategoryService {
   getSingleRowByFilter = async (filter) => {
     try {
       let detail = await CategoryModel.findOne(filter)
-        .populate("createdBy", ["_id", "name", "email", "role", "image"])
-        .populate("updatedBy", ["_id", "name", "email", "role", "image"])
-        .populate('parentId', ['_id',"name", "slug","image", "status"]);
+        .populate('parent', ['_id',"name", "slug","image", "isActive"]);
       return detail;
     } catch (exception) {
       throw exception;

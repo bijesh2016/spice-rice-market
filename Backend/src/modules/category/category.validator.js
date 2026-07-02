@@ -4,7 +4,7 @@ const createCategorySchema=joi.object({
     name:joi.string().min(3).max(100).required(),
     description:joi.string().max(500).optional(),   
     image:joi.string().uri().optional(),
-    parentId:joi.string().hex().length(24).optional().allow(null),
+    parent:joi.string().hex().length(24).optional().allow(null, ""),
     level:joi.number().integer().min(0).optional(),         
     isActive:joi.boolean().optional(),
     displayOrder:joi.number().integer().min(0).optional(),

@@ -65,8 +65,11 @@ class ProductController {
     };
 
     #validateMyProduct = (seller, user) => {
+        const sellerId = seller?._id ? seller._id.toString() : seller?.toString();
+        const userId = user?._id ? user._id.toString() : user?.toString();
+
         if (
-            this.#productDetail.seller !== user._id && // product.seller.equals(user._id)
+            sellerId !== userId &&
             user.role !== UserRoles.ADMIN
         ) {
             throw {
@@ -130,7 +133,7 @@ class ProductController {
 
             res.json({
                 data: del,
-                message: "Banner deleted successfully",
+                message: "Product deleted successfully",
                 status: "SUCCESS",
                 options: null,
             });

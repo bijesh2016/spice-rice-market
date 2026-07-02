@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, ShoppingCart, User, Menu, X, ChevronDown, Gift } from "lucide-react";
+import { Search, ShoppingCart, User, Menu, X, ChevronDown, Gift, Heart } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { useCart } from "@/contexts/CartContext";
+import { useWishlist } from "@/contexts/WishlistContext";
 
 const navItems = [
   { label: "Home", href: "/" },
@@ -48,7 +50,10 @@ const navItems = [
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-  const [cartCount] = useState(3);
+  const { getCartCount } = useCart();
+  const { getWishlistCount } = useWishlist();
+  const cartCount = getCartCount();
+  const wishlistCount = getWishlistCount();
 
   return (
     <>
@@ -96,19 +101,35 @@ export function Header() {
               </Button>
 
               {/* Account */}
-              <Button variant="ghost" size="icon" className="hidden sm:flex">
-                <User className="h-5 w-5" />
-              </Button>
+              <Link to="/account">
+                <Button variant="ghost" size="icon" className="hidden sm:flex">
+                  <User className="h-5 w-5" />
+                </Button>
+              </Link>
+
+              {/* Wishlist */}
+              <Link to="/wishlist">
+                <Button variant="ghost" size="icon" className="relative">
+                  <Heart className="h-5 w-5" />
+                  {wishlistCount > 0 && (
+                    <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-destructive text-destructive-foreground text-xs font-bold flex items-center justify-center">
+                      {wishlistCount}
+                    </span>
+                  )}
+                </Button>
+              </Link>
 
               {/* Cart */}
-              <Button variant="ghost" size="icon" className="relative">
-                <ShoppingCart className="h-5 w-5" />
-                {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-cta text-cta-foreground text-xs font-bold flex items-center justify-center">
-                    {cartCount}
-                  </span>
-                )}
-              </Button>
+              <Link to="/cart">
+                <Button variant="ghost" size="icon" className="relative">
+                  <ShoppingCart className="h-5 w-5" />
+                  {cartCount > 0 && (
+                    <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-cta text-cta-foreground text-xs font-bold flex items-center justify-center">
+                      {cartCount}
+                    </span>
+                  )}
+                </Button>
+              </Link>
 
               {/* Mobile Menu Toggle */}
               <Button 
@@ -123,18 +144,18 @@ export function Header() {
           </div>
 
           {/* Navigation Row - Desktop */}
-          <nav className="hidden lg:flex items-center gap-1 pb-3 overflow-x-auto">
+          <nav className="hidden lg:flex items-center gap-1 pb-3 overflow-visible">
             {navItems.map((item) => (
               <div
                 key={item.label}
-                className="relative"
+                className="relative group"
                 onMouseEnter={() => item.dropdown && setActiveDropdown(item.label)}
                 onMouseLeave={() => setActiveDropdown(null)}
               >
                 <Link
                   to={item.href}
                   className={`
-                    flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medium transition-colors
+                    flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap
                     ${item.highlight 
                       ? "bg-cta/10 text-cta hover:bg-cta/20" 
                       : "text-foreground/80 hover:text-foreground hover:bg-secondary"
@@ -153,7 +174,7 @@ export function Header() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute top-full left-0 mt-1 w-48 bg-background rounded-lg shadow-elevated border py-2 z-50"
+                      className="absolute top-full left-0 mt-1 w-48 bg-background rounded-lg shadow-elevated border py-2 z-[9999] pointer-events-auto"
                     >
                       {item.dropdown.map((subItem) => (
                         <Link

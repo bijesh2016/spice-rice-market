@@ -1,8 +1,7 @@
-// const fileUploadSvc = require("../../services/file-upload.service")
-// const {Status, AppConfig} = require("../../config/constants")
-// const bcrypt = require("bcryptjs");
-// const { randomStringGenerator } = require("../../utils/helpers");
-// const UserModel = require("../users/user.model");
+const bcrypt = require("bcrypt");
+const { Status } = require("../../config/constant");
+const { randomStringGenerator } = require("../../utils/helpers");
+const UserModel = require("../user/user.model");
 // const emailSvc = require("../../services/email.service");
 class AuthService {
   // Repository Pattern
@@ -11,14 +10,13 @@ class AuthService {
       // logic
       let payload = req.body;
       // payload.image = await fileUploadSvc.fileupload(req.file.path, "users/");
-      // payload.status = Status.INACTIVE;
+      payload.status = Status.ACTIVE;
       payload.isEmailVerified = false;
 
-      // password encrypt
-      // payload.password = bcrypt.hashSync(payload.password, 10);
+      delete payload.confirmPassword;
+      payload.password = await bcrypt.hash(payload.password, 10);
 
-      // custom function
-      // payload.activationToken = randomStringGenerator();
+      payload.activationToken = randomStringGenerator(80);
 
       return payload;
     } catch (exception) {
@@ -28,8 +26,8 @@ class AuthService {
 
   createUser = async (data) => {
     try {
-      // const user = new UserModel(data);
-      // return await user.save(); // insert
+      const user = new UserModel(data);
+      return await user.save();
     } catch (exception) {
       throw exception;
     }
@@ -37,8 +35,7 @@ class AuthService {
 
   getSingleUserByFilter = async (filter) => {
     try {
-      // const user = await UserModel.findOne(filter);
-      // return user;
+      return await UserModel.findOne(filter);
     } catch (exception) {
       throw exception;
     }
@@ -46,14 +43,11 @@ class AuthService {
 
   updateSingleUserByFilter = async (filter, data) => {
     try {
-      // const user = await UserModel.findOneAndUpdate(
-      //   filter,
-      //   { $set: data },
-      //   {
-      //     new: true,
-      //   }
-      // ); //   before update data return , new => true, : after update data
-      // return user;
+      return await UserModel.findOneAndUpdate(
+        filter,
+        { $set: data },
+        { new: true }
+      );
     } catch (exception) {
       throw exception;
     }
